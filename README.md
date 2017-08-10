@@ -2,7 +2,7 @@
 vuejs crud
 
 ## 内容
-vuejs 增删改查的demo
+vuejs 增删改查的demo，自动建表 <br>
 数据连接池库采用了HikariCP
 
 ## 效果图片
