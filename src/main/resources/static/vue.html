@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
+    <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.9/vue-resource.min.js'></script>
+    <title>vuejs</title>
+</head>
+<body>
+
+<div id="app" class="container">
+</div>
+<script>
+var vm = new Vue({
+    el: '#app',
+    ready: function() {
+        this.$http.get('test.json', function(data) {
+        	users = data;
+            this.$set('users', data);
+        }).error(function(data, status, request) {
+            console.log('fail' + status + "," + request);
+        })
+    },
+    data: {
+    	
+    },
+    methods:{
+    	removeUser:function(id){
+    		this.$http.post('/deleteUser/'+id, function(data){
+    			window.location.href="http://localhost/index.html";    			
+    		}).error(function(data, status, request) {
+                //console.log('fail' + status + "," + request);
+                window.location.href="http://localhost/index.html";
+            })
+    	},
+    	modifyUser:function(id){
+    		this.$http.post('/modifyUser/'+id, function(data){
+    			window.location.href="http://localhost/userInput.html?id="+id;    			
+    		}).error(function(data, status, request) {
+                //console.log('fail' + status + "," + request);
+                window.location.href="http://localhost/index.html";
+            })
+    	}
+    	
+    }
+});
+// get(url, [data], [success], [options])
+// post(url, [data], [success], [options])
+// put(url, [data], [success], [options])
+// patch(url, [data], [success], [options])
+// delete(url, [data], [success], [options])
+// jsonp(url, [data], [success], [options])
+</script>
+</body>
+</html>

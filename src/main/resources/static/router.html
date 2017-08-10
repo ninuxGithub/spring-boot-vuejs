@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<!--     <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script> -->
+<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.7.0/vue-router.min.js"></script> -->
+<!--     <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.9/vue-resource.min.js'></script> -->
+    <title>Router Test</title>
+</head>
+<body>
+
+<div id="app" class="container">
+	<h1>Hello App!</h1>
+	
+	<p>
+		<router-link to="/absolute-redirect">absolute-redirect &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link to="/redirect2Foo">redirect2Foo &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link :to="{path:'/queryFoo', query:{num:100,userName:'Tomson'}}"> fooQuery &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link :to="{ name: 'pbar', params: { userId:123 }}">pbar &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link to="/bar"> go to bar &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link to="/foo"> go to foo &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link to="/user/ninuxGithub/post/123456">/user/vuejs &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link to="/user/foo/">/user/foo &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+   		 <router-link to="/user/bar">/user/bar &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+   		 <router-link to="/user/foo/posts">/user/foo/posts &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link :to="{ path: '/register', query: { plan: 'private' }}">Register &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+		<router-link :to="{ path: '/foo'}" replace>foo replace &nbsp;&nbsp;|&nbsp;&nbsp;</router-link>
+	</p>
+	
+	<p>
+		<router-link tag="li" to="/foo">
+		 	<a>/foo</a>
+		</router-link>
+	</p>
+	
+	<pre class="bg-success">
+		<router-view></router-view>
+	</pre>
+	
+	<pre class="bg-danger">
+		<router-view name="a"></router-view>
+	</pre>
+	
+	<pre class="bg-danger">
+		<router-view name=b></router-view>
+	</pre>
+	
+	
+	<button @click="nav1" class="btn btn-primary">导航-->/foo</button>
+	<button @click="nav2" class="btn btn-primary">导航-->/queryFoo?num=100&userName=Tomson</button>
+	<button @click="nav3" class="btn btn-primary">name导航-->/pbar/userId</button>
+	<button @click="nav4" class="btn btn-primary">path（行不通...）导航-->/pbar/userId</button>
+	
+	
+	<br>
+	<br>
+	<br>
+	<div>
+		<p class="bg-primary">...</p>
+		<p class="bg-success">...</p>
+		<p class="bg-info">...</p>
+		<p class="bg-warning">...</p>
+		<p class="bg-danger">...</p>
+	</div>
+</div>
+
+<script>
+//路由组件
+
+Vue.use(VueRouter);
+
+const Foo ={template:'<div>foo</div>'}
+const AFoo ={template:'<div>a foo</div>'}
+const BFoo ={template:'<div>b foo</div>'}
+const Bar ={template:'<div>bar {{ $route.params.userId }}</div>'}
+const UserHome = { template: '<div>Home</div>' }
+const UserProfile = { template: '<div>Profile</div>' }
+const UserPosts = { template: '<div>Posts</div>' }
+
+const User={
+	template:' <div> <h2>User {{ $route.params.id }}</h2><router-view></router-view> </div>',
+	watch:{
+		'$route' (to, from){
+			//修改返回值
+			to.params.id+= " $----<modify>";
+		}
+	}
+}
+
+
+// 创建路由实例
+const router = new VueRouter({
+	routes:[
+		{path:'/', redirect:'foo'},
+		{ path:'/foo',
+			components:{
+				//多视图的情况			
+				default:Foo,
+				a:AFoo,
+				b:BFoo
+			}
+		},
+		{path:'/queryFoo', component:{template:'<div>queryFoo num is: {{ $route.query.num }} & userName is:{{ $route.query.userName }}</div>'}},
+		{ path: '/bar',name:'bar', component: Bar },
+		{ path: '/pbar/:userId',name:'pbar', component: {template:'<div>bar path variable userId is: {{ $route.params.userId }}</div>'} },
+		{ path: '/user/:id/post/:post_id', 
+		  component:{template:'<div> {User {{ $route.params.id }}, post_id:{{ $route.params.post_id }} }</div>'}
+		},
+		{path:'/register', component:{template:'<div>register plan is:{{ $route.query.plan }}</div>'}},
+		{ path: '/user/:id', component: User,
+	          // UserPosts will be rendered inside User's <router-view>渲染到内部的router-view
+		      children: [
+		        // when /user/:id is matched
+		        { path: '', component: UserHome },
+		        // when /user/:id/profile is matched
+		        { path: 'profile', component: UserProfile },
+		        // when /user/:id/posts is matched
+		        { path: 'posts', component: UserPosts }
+		      ]
+		 },
+		 { path: '/redirect2Foo', redirect: 'foo' },
+		 { path: '/absolute-redirect', redirect: '/bar' },
+	]
+});
+
+
+// 创建和挂在根实例
+const app = new Vue({
+	methods:{
+		nav1:function(){
+			router.push({path:'/foo'})
+		},
+		nav2:function(){
+			router.push({path:'/queryFoo',query:{num:100, userName:'javaScript'}})
+		},
+		nav3:function(){
+			router.push({ name: 'pbar', params: { userId: 123 }})
+		},
+		nav4:function(){
+			router.push({ path: '/pbar', params: { userId: 123 }})
+		}
+	},
+	router:router
+}).$mount('#app');
+
+</script>
+</body>
+</html>

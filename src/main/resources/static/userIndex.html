@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!--     <meta charset="UTF-8"/> -->
+<!--     <meta name="viewport" content="width=device-width, initial-scale=1"/> -->
+<!--     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/> -->
+<!--     <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script> -->
+<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.7.0/vue-router.min.js"></script> -->
+    <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.9/vue-resource.min.js'></script>
+    <title>User Index Page</title>
+</head>
+<body>
+
+<div id="app" class="container">
+	<div>
+		<pre class="bg-success">
+			<router-view></router-view>
+		</pre>
+	</div>
+</div>
+
+<script type="text/javascript">
+Vue.use(VueResource);
+Vue.use(VueRouter);
+// Vue.http.options.emulateHTTP = true;
+Vue.http.options.emulateJSON = true;
+
+
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+
+const UserInput ={
+		template:`<div class="panel panel-default">
+					<div class="panel-heading text-center">
+					    <h2>User Input</h2>
+					</div>
+					<div class="panel-body">
+						<form class="form-horizontal">
+							<!-- User Name -->
+							<div class="form-group">
+								<label for="userName" class="col-sm-2 control-label">UserName</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" v-model="user.username" id="userName" aria-describedby="helpBlock1" placeholder="place input UserName....">
+								</div>
+								<span id="helpBlock1" class="col-sm-2 has-error help-block ">{{userNameMsg}}</span>
+							</div>
+							
+							<!-- Password -->
+							<div class="form-group">
+								<label for="password" class="col-sm-2 control-label">Password</label>
+								<div class="col-sm-4">
+									<input type="password" class="form-control" v-model="user.password" id="password" placeholder="place input Password....">
+								</div>
+								<div class="col-sm-2 help-block has-error">{{passwordMsg}}</div>
+							</div>
+				
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button  class="btn btn-primary" v-on:click="quit">Quit</button>
+									<button  class="btn btn-primary" v-on:click="submitForm">Submit</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>`,
+		data(){
+			return {
+				user:{id: null, username: "", password: "", role: ""},
+				userNameMsg:'',
+		    	passwordMsg:'',
+			}
+		},
+		
+		
+		created() {
+			this.fetchData()
+		},
+		watch:{
+			'$route':'fetchData',
+		},
+	    methods: {
+	    	fetchData:function(){
+	    		var id=this.$route.params.userId;
+	    		console.dir(typeof(id))
+	    		if(typeof(id)==='string' && id=='null'){
+	    			id=null;
+	    		}
+	    		this.$http.post('/getUser', {'id':id}).then((response) => {
+	    			this.user = response.data;
+	    			console.dir(response)
+	            }, (response) => {
+	            	console.dir("2")
+	            });
+	    	},
+	    	submitForm: function(e) {
+	    		e.preventDefault();
+	           	console.dir(this.user)
+	           	var flag = true;
+	           	if(this.user.username==null){
+	           		this.userNameMsg = '用户名为空';
+	           		flag=false;
+	           		$("#userName").parents('.form-group').addClass('has-error');
+	           	}else{
+	           		$("#userName").parents('.form-group').removeClass('has-error');
+	           		this.userNameMsg = '';
+	           	}
+	           	if(this.user.password ==null){
+	           		this.passwordMsg = '密码为空';
+	           		$("#password").parents('.form-group').addClass('has-error');
+	           		flag=false;
+	           	}else{
+	           		$("#password").parents('.form-group').removeClass('has-error');
+	           		this.passwordMsg = '';
+	           	}
+	           	if(flag){
+		            this.$http.post('/addUser', this.user).then((response) => {
+		                // success callback
+		               console.dir(response)
+		               console.dir('success...')
+		               this.$router.push({ path: '/'})
+		            }, (response) => {
+		               console.dir('failed...')
+		            });
+	           	}
+	        },
+	        quit: function(){
+	        	console.dir('quit submit...')
+	        }
+        }
+}
+
+
+
+const UserIndex ={
+		template:`<div class="panel panel-default">
+					<div class="panel-heading text-center">
+					    <h2>User List</h2>
+					</div>
+					
+					<div class="panel-body">
+					    <table class="table table-hover">
+					        <thead>
+					        <tr>
+					            <th>ID</th>
+					            <th>UserName</th>
+					            <th>Password</th>
+					            <th>Role</th>
+					            <th>Operation &nbsp;<router-link :to="{ name: 'userInput', params: { userId: 'null' }}" class="panel-default" >添加</router-link></th>
+					        </tr>
+					        </thead>
+					        <tbody>
+					            <tr v-for="user in users">
+					                <td>{{user.id}}</td>
+					                <td>{{user.username}}</td>
+					                <td>{{user.password}}</td>
+					                <td>{{user.role}}</td>
+					                <td>
+					                	<button v-on:click="removeUser(user.id);" class="btn btn-primary">删除</button>
+					                	<button v-on:click="modifyUser(user.id);" class="btn btn-info">修改</button>
+					                </td>
+					            </tr>
+					        </tbody>
+					    </table>
+					</div>
+				</div>`,
+		data(){
+			return {
+				users:[],
+			}
+		},
+		created() {
+			this.fetchData()
+		},
+		watch:{
+			'$route':'fetchData'
+		},
+	    methods: {
+	    	fetchData:function(){
+				this.$http.get('test.json', function(data) {
+					this.users = data;
+		        }).error(function(data, status, request) {
+		            console.log('fail:' + status + "," + request);
+		        })
+	    	},
+	    	removeUser:function(id){
+	    		this.$http.post('/deleteUser', {'id':id}).then((response) => {
+	            	console.dir("1")
+	            	console.dir(response)
+	            	this.fetchData();
+	    			this.$router.push({path:'/'});
+	            }, (response) => {
+	            	console.dir("2")
+	            });
+	    	},
+	    	modifyUser:function(id){
+	    			this.$router.push({name:'userInput', params:{userId:id}});
+	    	}
+        }
+}
+
+
+var vm =new Vue({
+    el: '#app',
+    router:new VueRouter({
+    	routes:[
+    		{ path: '/', redirect: 'userIndex' },
+    		{ path: '/userIndex', name:'userIndex',  component: UserIndex},
+    		{ path: '/userInput/:userId',name:'userInput', component: UserInput },
+    	]
+    })
+});
+</script>
+</body>
+</html>

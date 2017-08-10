@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Template</title>
+</head>
+<body>
+
+<div id="app" class="container">
+	<div>
+		<pre class="bg-success">
+			<router-view></router-view>
+		</pre>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+
+// Vue.http.options.emulateJSON = true;
+Vue.use(VueRouter);
+const UserInput ={
+		template:`<div class="panel panel-default">userinput</div>`
+}
+const UserIndex ={
+		template:'<div>fine{{message}}  ---- {{users}}</div>',
+		data(){
+			return {
+				message:'i am the message',
+				users:[]
+			}
+		},
+		
+		created() {
+			this.fetchData()
+		},
+		
+		watch:{
+			'$route':'fetchData'
+		},
+	    methods: {
+	    	fetchData:function(){
+	    		$.ajax({
+        			type:"GET",
+                    url:"test.json",
+                    dataType:"json",
+                    success: function(data) {
+        				console.dir(data);
+        				this.users = data;
+                    }
+        		});
+	    	}
+        }
+}
+
+var vm =new Vue({
+    el: '#app',
+    ready: function() {
+    	console.dir("ready..")
+        this.$http.get('test.json', function(data) {
+        	console.dir(data)
+            this.$set('users', data);
+        }).error(function(data, status, request) {
+            console.log('fail' + status + "," + request);
+        })
+    },
+    data: {
+    },
+    router:new VueRouter({
+    	routes:[
+    		{ path: '/',  component: UserIndex},
+    		{ path: '/userIndex',
+    			name:'userIndex', 
+    			component: UserIndex,
+    			
+    		},
+    		{ path: '/userInput',name:'userInput', component: UserInput },
+    	]
+    })
+});
+</script>
+</body>
+</html>

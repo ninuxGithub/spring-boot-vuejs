@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.7.0/vue-router.min.js"></script>
+    <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.9/vue-resource.min.js'></script>
+    <script type="text/javascript" src='/user/userIndex.vue'></script>
+    <script type="text/javascript" src='/user/userInput.vue'></script>
+    <title>User Index Page</title>
+</head>
+<body>
+
+<div id="app" class="container">
+	<div>
+		<pre class="bg-success">
+			<router-view></router-view>
+		</pre>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+/*引入配置*/
+Vue.use(VueResource);
+Vue.use(VueRouter);
+Vue.http.options.emulateJSON = true;
+/* 配置路由 */
+var vm =new Vue({
+    el: '#app',
+    router:new VueRouter({
+    	routes:[
+    		{ path: '/', redirect: 'userIndex' },
+    		{ path: '/userIndex', name:'userIndex',  component: UserIndex},
+    		{ path: '/userInput/:userId',name:'userInput', component: UserInput },
+    	]
+    })
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.7.0/vue-router.min.js"></script>
+    <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.9/vue-resource.min.js'></script>
+    <title>static vuejs</title>
+</head>
+<body>
+
+<div id="app" class="container">
+	<a href="/router.html"> router page</a>
+	<a href="http://localhost/router-redirect.html"> redirect router page</a>
+	<div class="panel panel-default">
+        <div class="panel-heading text-center">
+            <h2>User List</h2>
+        </div>
+        
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>UserName</th>
+                    <th>Password</th>
+                    <th>Role</th>
+                    <th>Operation</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in users">
+                        <td>{{user.id}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.password}}</td>
+                        <td>{{user.role}}</td>
+                        <td>
+                        	<button v-on:click="removeUser(user.id);" class="btn btn-primary">删除</button>
+                        	<button v-on:click="modifyUser(user.id);" class="btn btn-info">修改</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+             <div>
+            	<a href="/userInput.html"  class="panel-default">添加</a>
+            </div>
+        </div>
+    </div>
+ 
+</div>
+
+<script>
+var vm = new Vue({
+    el: '#app',
+    ready: function() {
+        this.$http.get('test.json', function(data) {
+        	users = data;
+            this.$set('users', data);
+        }).error(function(data, status, request) {
+            console.log('fail' + status + "," + request);
+        })
+    },
+    data: {
+    	
+    },
+    methods:{
+    	removeUser:function(id){
+    		this.$http.post('/deleteUser/'+id, function(data){
+    			window.location.href="http://localhost/index.html";    			
+    		}).error(function(data, status, request) {
+                window.location.href="http://localhost/index.html";
+            })
+    	},
+    	modifyUser:function(id){
+    		this.$http.post('/modifyUser/'+id, function(data){
+    			window.location.href="http://localhost/userInput.html?id="+id;    			
+    		}).error(function(data, status, request) {
+                window.location.href="http://localhost/index.html";
+            })
+    	}
+    	
+    }
+});
+</script>
+</body>
+</html>
