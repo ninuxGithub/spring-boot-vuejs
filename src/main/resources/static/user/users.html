@@ -18,16 +18,14 @@
 			<h2>User List  JQgrid</h2>
 		</div>
 		<div id="user_table_div" class="panel-body"></div>
-        
-        
-        <table id="list27"></table>
-    	<div id="pager27" ></div>
+		<div id="user_table_div2" class="panel-body"></div>
     </div>
  
 </div>
 
 <script>
 $(function(){
+	
 	(function initUserTable(){
 		$.jgrid.defaults.width = 780;
 		$.jgrid.defaults.responsive = true;
@@ -64,7 +62,7 @@ $(function(){
 	        viewrecords: true,
 	        gridview: true,
 	        sortable:false,
-	        width:1000,
+	        width:1020,
 	        height:400,
 	        loadui: "Disable",
 	        sortname:'id',
@@ -75,7 +73,64 @@ $(function(){
 	        pager: "#user_pager",
 	        rownumbers: true, //可自动在表格前面添加序号
 	        rownumWidth:50,
-	        caption: "Loading data from server at once"	
+	        caption: "<h2><b>点击按钮翻页</b></h2>"	
+	    });
+	
+	    $table.jqGrid('setLabel', 'rn', '序号', {'text-align':'center','vertical-align': 'center'}, {'title':'序号'});
+	    for (var i = 0; i < userColModel.length; i++) {
+	        var model = userColModel[i];
+	        $table.jqGrid('setLabel', model.name, model.label, {'text-align' : 'center' }, {'title':model.label});
+	    }
+	})();
+	
+	(function initUserTable(){
+		$.jgrid.defaults.width = 780;
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+		
+		$("#user_table_div2").empty().html('<table id="user_table2" class="table table-hover "  width="100%"></table><div id="user_pager2" style="height:30px;"></div>');
+		var $table = $("#user_table2");
+		
+		var settings = {}
+		
+		var userColModel = [
+	        { label: 'ID', name: 'id', width: 200, align:'center', key:true},
+	        { label: '用户名称', name: 'username', width: 300, align:'center'},
+	        { label: '密码', name: 'password',width:300, align:'center'},
+	        //aaa 是虚构的
+	        { label: '操作', sortable: false, name: 'aaa', width: 150 ,align:'center',
+	        	formatter: function(cellValue, options, rowObject)
+	        	{
+	            	return '<a class="success-info" onclick="window.operate('+options.rowId+','+rowObject.id+')" >操作'+rowObject.id+'</a>';
+	        	}
+	        }
+	    ];
+		
+		$table.jqGrid({
+	        url: '/loadUsers',
+	        mtype: "POST",
+	        postData:settings,
+	        datatype: "json",
+	        colModel: userColModel,
+	        rowNum: 5,
+	        shrinkToFit: false,
+	        viewrecords: true,
+	        gridview: true,
+	        sortable:false,
+	        width:1020,
+	        height:200,
+	    	page: 1,
+			scroll: 1,
+	        loadui: "Disable",
+	        sortname:'id',
+	        sortorder:'asc',
+	        recordtext : "记录 {0} ~ {1} | 总记录数 {2}",//显示记录数的格式
+	        emptyrecords : "",//空记录时的提示信息
+	        pgtext : "{0}/{1}",//页数显示格式
+	        pager: "#user_pager2",
+	        rownumbers: true, //可自动在表格前面添加序号
+	        rownumWidth:50,
+	        caption: "<h2><b>滚动鼠标加载数据</b></h2>"	
 	    });
 	
 	    $table.jqGrid('setLabel', 'rn', '序号', {'text-align':'center','vertical-align': 'center'}, {'title':'序号'});
