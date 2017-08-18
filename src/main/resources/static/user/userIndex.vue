@@ -95,14 +95,14 @@ const UserIndex ={
 				        width:1000,
 				        height:'auto',
 				        loadui: "Disable",
-				        //recordtext : "记录 {0} ~ {1} | 总记录数 {2}",//显示记录数的格式
-				        //emptyrecords : "",//空记录时的提示信息
-				        //pgtext : "{0}/{1}",//页数显示格式
+				        recordtext : "记录 {0} ~ {1} | 总记录数 {2}",//显示记录数的格式
+				        emptyrecords : "",//空记录时的提示信息
+				        pgtext : "{0}/{1}",//页数显示格式
 				        rownumbers: true, //可自动在表格前面添加序号
 				        rownumWidth:50,
 				        
 				        //*************需要pager对象
-				        //pager: "#jQpager"
+				        pager: "#jQpager"
 				    });
 				    $table.jqGrid('setLabel', 'rn', '序号', {'text-align':'center','vertical-align': 'center', 'width:':'100px'}, {'title':'序号'});
 				    for ( var i = 0; i <= this.users.length; i++){

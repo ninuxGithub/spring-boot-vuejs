@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.bean.CallBack;
 import com.example.demo.bean.User;
 import com.example.demo.repository.UserRepository;
 
@@ -42,7 +45,7 @@ public class IndexController {
 		// pageNo-1非常重要, 默认是根据ID 升序排序的
 		PageRequest pageRequest = new PageRequest(pageNo - 1, PAGECONT, new Sort(Direction.ASC, "id"));
 		Page<User> userPages = userRepository.findAll(pageRequest);
-		
+
 		logger.info(userPages.toString());
 		// List<User> users = userRepository.findAll();
 		Map<String, Object> map = new HashMap<>();
@@ -51,6 +54,48 @@ public class IndexController {
 		long end = System.currentTimeMillis();
 		logger.info("spend time :{} ------- pageNo is :{}", (end - start), pageNo);
 		return map;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/loadUsers", method = RequestMethod.POST)
+	public CallBack<User> loadUsers(
+			@RequestParam(value = "rows", required = false) Integer rows,
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "sidx", required = false, defaultValue="id") String sidx,
+			@RequestParam(value = "sord", required = false) String sord) {
+		logger.info("rows:"+rows+"  page:"+page+"  sidx:" +sidx+"  sord:"+sord);
+		List<User> list = userRepository.findAll();
+		CallBack<User> handListPage = handListPage(rows, page, sidx, sord, list);
+		return handListPage;
+	}
+
+	private <T, E> CallBack<T> handListPage(Integer rows, Integer page, String sidx, String sord, List<T> pageList) {
+
+		Integer size = 0;
+		Integer totalPage = 0;
+		if (null != pageList && pageList.size() > 0) {
+			size = pageList.size();
+			int by = size / rows;
+			totalPage = size % rows == 0 ? by : by + 1;
+			if (page > totalPage) {
+				page = totalPage;
+			}
+		}
+		Integer startIndex = (page - 1) * rows;
+		Integer endIndex = page * rows;
+		List<T> subList = new ArrayList<>();
+
+		if (null != pageList && pageList.size() > 0) {
+			size = pageList.size();
+			if (startIndex > size) {
+				startIndex = size - rows;
+			}
+			if (endIndex > size) {
+				endIndex = size;
+			}
+			subList = pageList.subList(startIndex, endIndex);
+		}
+		return new CallBack<T>(size, page, totalPage, subList);
 	}
 
 	@ResponseBody
