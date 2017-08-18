@@ -1,0 +1,121 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta charset="utf-8">
+<title>乐惠微官网商店数据管理系统</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/Pager.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/jquery.pager.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		$("#pager").pager({ pagenumber: '${pageNo}', pagecount: '${pagination.pageCount}', buttonClickCallback: pageClick });
+	});
+	
+	pageClick = function(pageNo) {
+		var form = $('#test2');
+		var pageNoInput = $('<input type="hidden" name="pageNo"/>');
+		pageNoInput.val(pageNo);
+		pageNoInput.appendTo(form);
+		form.appendTo('body');
+		form.submit();
+	};
+	
+</script>
+</head>
+
+<body>
+	<form action="back/order/paginationOrdere.action?ordrStateKey=${ordrStateKey}" method="post" id="test2">
+	<div class="place">
+		<span>位置：</span>
+		<ul class="placeul">
+			<li><a href="back/indexBus.action">首页</a></li>
+			<li><a>订单管理</a></li>
+			<li><a>订单查询</a></li>
+		</ul>
+	</div>
+
+	<div class="rightinfo">
+		<div class="tools">
+			<ul class="toolbar">
+				<li>
+				<!-- <form action="back/order/serOrderNameBus.action" method="post"> -->
+					<label for="contactPerson">客户姓名</label><input id="contactPerson" name="ordere.contactPerson" type="text"/>&nbsp;
+					客户号码&nbsp;<input id="contactPhone" name="ordere.contactPhone" type="text"/>&nbsp;
+					&nbsp;
+					订单编号&nbsp;<input id="contactPhone" name="ordere.ordrID" type="text"/>&nbsp;
+					<input type="submit" value="搜索"/>&nbsp;&nbsp;&nbsp;
+					<a href="back/order/paginationOrdere.action?ordrStateKey=1" class="tablelink">查看已发货的订单</a>&nbsp;&nbsp;&nbsp;
+					<a href="back/order/paginationOrdere.action?ordrStateKey=3" class="tablelink">查看已取消的订单</a> 
+				<!-- </form> -->
+				</li>
+			</ul>
+		</div>
+		
+		<table class="tablelist">
+			<thead align="center">
+				<tr>
+					<th style="width:20%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;订单号</th>
+					<th style="width:10%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;时间</th>
+					<th style="width:6%">客户姓名</th>
+					<th style="width:10%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系方式</th>
+					<th style="width:6%">支付方式</th>
+					<th style="width:6%">共需支付</th>
+					<th style="width:6%">订单状态</th>
+					<th style="width:5%">是否支付</th>
+					<th style="width:23%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收货地址</th>
+					<th style="width:8%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<s:iterator value="#request.pagination.pageList"  status="iter">
+					<tr>
+						<td align="center" style="height:20px"><s:property value="ordrID"></s:property></td>
+						<td align="center" style="height:20px"><s:property value="ordrCreateTime"></s:property></td>
+						<td align="center" style="height:20px"><s:property value="contactPerson"/></td>
+						<td align="center" style="height:20px"><s:property value="contactPhone"/></td>
+						<td align="center" style="height:20px">
+							<s:if test="ordrPaymentMethod == 0">支付宝</s:if>
+							<s:else>货到付款</s:else>
+						</td>
+						<td align="center" style="height:20px"><s:property value="totalPrice"/></td>
+						<td align="center" style="height:20px">
+							<s:if test="ordrState == 0">已下单</s:if>
+							<s:elseif test="ordrState == 1">配送中</s:elseif>
+							<s:elseif test="ordrState == 2">已完成</s:elseif>
+							<s:else>已取消</s:else>
+						</td>
+						<td align="center" style="height:20px">
+							<s:if test="paymentState == 0">否</s:if>
+							<s:else>是</s:else>
+						</td>
+						<td align="center" style="height:20px"><s:property value="address"/></td>
+						<td align="center" style="height:20px">
+							<a href="back/order/detailOrdere.action?ordere.ordrID=${ordrID }" class="tablelink">订单详情</a>
+						</td>
+					</tr>
+					
+				</s:iterator>
+			</tbody>
+		</table>
+		<div id="pager"></div>
+	</div>
+	
+	</form>
+	<script type="text/javascript">
+		$('.tablelist tbody tr:odd').addClass('odd');
+	</script>
+</body>
+
+</html>

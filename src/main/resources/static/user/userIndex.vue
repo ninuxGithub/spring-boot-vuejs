@@ -39,9 +39,7 @@ const UserIndex ={
 			}
 		},
 		created() {
-			console.dir("this.pageNo is:" + this.pageNo)
 			this.fetchData(this.pageNo);
-			//this.initPager();
 		},
 		watch:{
 			'$route':'fetchData'
@@ -54,9 +52,8 @@ const UserIndex ={
 					this.users = data.userPages.content;
 					this.pageNo = data.pageNo;
 					this.totalPages = data.userPages.totalPages;
-					//console.dir(this.pageNo);
-					//console.dir(this.totalPages);
 					
+					//分页js开始
 					var that = this;
 		    		$(function(){	    		
 						jQuery("#pager").pager({ pagenumber: that.pageNo, pagecount:that.totalPages , buttonClickCallback: pageClick });
@@ -69,16 +66,6 @@ const UserIndex ={
 		        }).error(function(data, status, request) {
 		            console.log('fail:' + status + "," + request);
 		        })
-	    	},
-	    	initPager:function(){
-	    		var that = this;
-	    		$(function(){	    		
-					jQuery("#pager").pager({ pagenumber: this.pageNo, pagecount:this.totalPages , buttonClickCallback: pageClick });
-					
-					function pageClick(pageNo){
-						that.fetchData(pageNo);
-					}
-				});
 	    	},
 	    	removeUser:function(id){
 	    		this.$http.post('/deleteUser', {'id':id}).then((response) => {
