@@ -42,6 +42,8 @@ public class IndexController {
 		// pageNo-1非常重要, 默认是根据ID 升序排序的
 		PageRequest pageRequest = new PageRequest(pageNo - 1, PAGECONT, new Sort(Direction.ASC, "id"));
 		Page<User> userPages = userRepository.findAll(pageRequest);
+		
+		logger.info(userPages.toString());
 		// List<User> users = userRepository.findAll();
 		Map<String, Object> map = new HashMap<>();
 		map.put("userPages", userPages);

@@ -5,14 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/user/Pager.css"/>
+    <link rel="stylesheet" href="/user/ui.jqgrid-bootstrap.css"/>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="/user/jquery.pager.js"></script>
+	<script src="/user/jquery.jqGrid.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.7.0/vue-router.min.js"></script>
     <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.9/vue-resource.min.js'></script>
     <script type="text/javascript" src='/user/userIndex.vue'></script>
     <script type="text/javascript" src='/user/userInput.vue'></script>
     <title>User Index Page</title>
+    
+    <style type="text/css">
+		.ui-th-div{
+			text-align:center;
+		}
+		
+    </style>
 </head>
 <body>
 
@@ -25,6 +34,10 @@
 </div>
 
 <script type="text/javascript">
+
+function operate(r,id){
+	alert(id)
+}
 /*引入配置*/
 Vue.use(VueResource);
 Vue.use(VueRouter);
