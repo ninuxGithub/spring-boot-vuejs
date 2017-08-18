@@ -56,6 +56,14 @@ public class IndexController {
 		return map;
 	}
 
+	/**
+	 * 为jqgrid 提供数据的请求
+	 * @param rows
+	 * @param page
+	 * @param sidx
+	 * @param sord
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/loadUsers", method = RequestMethod.POST)
 	public CallBack<User> loadUsers(
@@ -69,8 +77,19 @@ public class IndexController {
 		return handListPage;
 	}
 
+	/**
+	 * 分页的核心逻辑：
+	 * 			<b>这行变量是通过jqGrid 发送请求自带的参数    (如果是滚动翻页，需要提供page,scroll参数)  采用普通的$.ajax 请求数据是没有的</b>
+	 * @param rows
+	 * @param page
+	 * @param sidx
+	 * @param sord
+	 * @param pageList
+	 * @return
+	 */
 	private <T, E> CallBack<T> handListPage(Integer rows, Integer page, String sidx, String sord, List<T> pageList) {
-
+		//考虑根据前台的字段排序（省略）
+		//TODO: sort jqgrid 
 		Integer size = 0;
 		Integer totalPage = 0;
 		if (null != pageList && pageList.size() > 0) {
