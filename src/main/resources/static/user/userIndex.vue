@@ -28,26 +28,57 @@ const UserIndex ={
 					            </tr>
 					        </tbody>
 					    </table>
+						<div id="pager" class="success"></div>
 					</div>
 				</div>`,
 		data(){
 			return {
 				users:[],
+				pageNo:1,
+				totalPages:1
 			}
 		},
 		created() {
-			this.fetchData()
+			console.dir("this.pageNo is:" + this.pageNo)
+			this.fetchData(this.pageNo);
+			//this.initPager();
 		},
 		watch:{
 			'$route':'fetchData'
 		},
 	    methods: {
-	    	fetchData:function(){
-				this.$http.get('/test.json', function(data) {
-					this.users = data;
+	    	fetchData:function(pageNo){
+				this.$http.get('/test.json?pageNo='+pageNo, function(data) {
+					//this.users = data.uer;
+					console.dir(data)
+					this.users = data.userPages.content;
+					this.pageNo = data.pageNo;
+					this.totalPages = data.userPages.totalPages;
+					//console.dir(this.pageNo);
+					//console.dir(this.totalPages);
+					
+					var that = this;
+		    		$(function(){	    		
+						jQuery("#pager").pager({ pagenumber: that.pageNo, pagecount:that.totalPages , buttonClickCallback: pageClick });
+						
+						function pageClick(pageNo){
+							console.dir("current page is:" + pageNo);
+							that.fetchData(pageNo);
+						}
+					});
 		        }).error(function(data, status, request) {
 		            console.log('fail:' + status + "," + request);
 		        })
+	    	},
+	    	initPager:function(){
+	    		var that = this;
+	    		$(function(){	    		
+					jQuery("#pager").pager({ pagenumber: this.pageNo, pagecount:this.totalPages , buttonClickCallback: pageClick });
+					
+					function pageClick(pageNo){
+						that.fetchData(pageNo);
+					}
+				});
 	    	},
 	    	removeUser:function(id){
 	    		this.$http.post('/deleteUser', {'id':id}).then((response) => {

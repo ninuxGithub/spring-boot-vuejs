@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +21,8 @@ import com.example.demo.repository.UserRepository;
 public class IndexController {
 
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+	
+	private static final Integer PAGECONT = 10;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -31,12 +36,18 @@ public class IndexController {
 
 	@ResponseBody
 	@RequestMapping("/test.json")
-	public List<User> loadUsers() {
+	public Map<String, Object> loadUserPages (@RequestParam(name="pageNo", defaultValue="1") Integer pageNo) {
 		long start = System.currentTimeMillis();
-		List<User> users = userRepository.findAll();
+		//pageNo-1非常重要
+		PageRequest pageRequest = new PageRequest(pageNo-1, PAGECONT);
+		Page<User> userPages = userRepository.findAll(pageRequest);
+//		List<User> users = userRepository.findAll();
+		Map<String, Object> map = new HashMap<>();
+		map.put("userPages", userPages);
+		map.put("pageNo", pageNo);
 		long end = System.currentTimeMillis();
-		logger.info("spend time :{}",(end-start));
-		return users;
+		logger.info("spend time :{} ------- pageNo is :{}",(end-start), pageNo);
+		return map;
 	}
 	
 	@ResponseBody

@@ -22,6 +22,9 @@ vuejs 增删改查的demo，自动建表 <br>
 		在组件里面获取参数：this.$route.params.xxxx   this.$route.query.xxxxx   xxxx 是你要获取的参数
 		这两个变量是不同的
 		
+		
+		加入分页的功能
+		
 ## 效果图片
 ![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/vue.png)
 

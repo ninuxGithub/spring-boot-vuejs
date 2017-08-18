@@ -11,6 +11,7 @@ public class SeeminglyUnmodifiable {
       startingLocations.put("LeftRook", new Point(1, 1));
       startingLocations.put("LeftKnight", new Point(1, 2));
       startingLocations.put("LeftCamel", new Point(1, 3));
+      startingLocations.put("LeftCamel2", new Point(1,1));
       //..more locations..
    }
 
@@ -43,6 +44,7 @@ public class SeeminglyUnmodifiable {
 class Point{
 	public float x;
 	public float y;
+	
 	public Point(float x, float y){
 		setLocation(x, y);
 	}
