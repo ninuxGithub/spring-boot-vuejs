@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.bean.CallBack;
+import com.example.demo.bean.Order;
 import com.example.demo.bean.Role;
 import com.example.demo.bean.User;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 
 @Controller
@@ -32,6 +34,9 @@ public class IndexController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	
 //	@Autowired
 //	private RoleRepository roleRepository;
@@ -99,10 +104,36 @@ public class IndexController {
 	
 	
 	@ResponseBody
+	@RequestMapping(value = "/loadProducts", method = RequestMethod.POST)
+	public CallBack<Order> loadProducts(
+			@RequestParam(value = "rows", required = false) Integer rows,
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "sidx", required = false, defaultValue="id") String sidx,
+			@RequestParam(value = "sord", required = false) String sord) {
+		logger.info("rows:"+rows+"  page:"+page+"  sidx:" +sidx+"  sord:"+sord);
+		
+		
+		List<Order> list = orderRepository.findAll();
+		
+		CallBack<Order> handListPage = handListPage(rows, page, sidx, sord, list);
+		return handListPage;
+	}
+	
+	
+	
+	@ResponseBody
 	@RequestMapping(value = "/loadRoles", method = RequestMethod.GET)
 	public List<Role> loadRoles(@RequestParam("id") Long id) {
 		List<Role> roles = userRepository.findOne(id).getRoles();
 		return roles;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/modifyProduct", method=RequestMethod.POST)
+	public List<Order> modify(@RequestParam("oper") String oper, @RequestParam(value="id", required=false) Long id){
+		System.out.println(oper + " --"+ id);
+		List<Order> list = orderRepository.findAll();
+		return list; 
 	}
 
 	/**

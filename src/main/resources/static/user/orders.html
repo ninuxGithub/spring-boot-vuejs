@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/user/ui.jqgrid-bootstrap.css"/>
+	<script type="text/javascript" src="/user/grid.locale-cn.js"></script>
+	<script src="/user/jquery.jqGrid.js"></script>
+
+<!-- 	<link rel="stylesheet" type="text/css" media="screen" href="/css/jquery/ui-lightness/jquery-ui-1.8.6.custom.css" /> -->
+<!-- 	<link rel="stylesheet" type="text/css" media="screen" href="/css/jqgrid/ui.jqgrid.css" /> -->
+
+<!-- 	<script type="text/javascript" src="/js/jquery/jquery-1.4.4.min.js"></script> -->
+<!-- 	<script type="text/javascript" src="/js/jquery/jquery-ui-1.8.6.custom.min.js"></script>  -->
+<!-- 	<script type="text/javascript" src="/js/jqgrid/grid.locale-en.js" ></script> -->
+<!-- 	<script type="text/javascript" src="/js/jqgrid/jquery.jqGrid.min.js"></script> -->
+	
+	
+	<style type="text/css">
+		.ui-jqgrid .ui-jqgrid-htable .ui-th-div {
+		    height: 17px;
+		    margin-top: 5px;
+		    text-align: center;
+		}
+	</style>
+</head>
+<body>
+
+<div id="app" class="container">
+	<div class="panel panel-default">
+        <div class="panel-heading text-center">
+			<h2>User List  JQgrid</h2>
+		</div>
+		<div id="order_table_div" class="panel-body"></div>
+		<div id="dialog" title="Feature not supported" style="display:none">
+			<p>That feature is not supported.</p>
+		</div>
+		
+		<div id="dialogSelectRow" title="Warning" style="display:none">
+			<p>Please select row</p>
+		</div>
+    </div>
+ 
+</div>
+
+<script>
+	Date.prototype.pattern=function(fmt) {
+	  var o = {
+	  "M+" : this.getMonth()+1, //月份
+	  "d+" : this.getDate(), //日
+	  "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时
+	  "H+" : this.getHours(), //小时
+	  "m+" : this.getMinutes(), //分
+	  "s+" : this.getSeconds(), //秒
+	  "q+" : Math.floor((this.getMonth()+3)/3), //季度
+	  "S" : this.getMilliseconds() //毫秒
+	  };
+	  var week = {
+	  "0" : "/u65e5",
+	  "1" : "/u4e00",
+	  "2" : "/u4e8c",
+	  "3" : "/u4e09",
+	  "4" : "/u56db",
+	  "5" : "/u4e94",
+	  "6" : "/u516d"
+	  };
+	  if(/(y+)/.test(fmt)){
+	    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+	  }
+	  if(/(E+)/.test(fmt)){
+	    fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "/u661f/u671f" : "/u5468") : "")+week[this.getDay()+""]);
+	  }
+	  for(var k in o){
+	    if(new RegExp("("+ k +")").test(fmt)){
+	      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+	    }
+	  }
+	  return fmt;
+	}
+	
+	Date.prototype.Format = function (fmt) { //author: meizz 
+	    var o = {
+	        "M+": this.getMonth() + 1, //月份 
+	        "d+": this.getDate(), //日 
+	        "h+": this.getHours(), //小时 
+	        "m+": this.getMinutes(), //分 
+	        "s+": this.getSeconds(), //秒 
+	        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+	        "S": this.getMilliseconds() //毫秒 
+	    };
+	    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	    for (var k in o)
+	    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+	    return fmt;
+	}
+	
+	
+$(function(){
+	//第二种方式的表格展示
+	(function initUserTable(){
+		$.jgrid.defaults.width = 780;
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+		$("#order_table_div2").empty().html('<table id="order_table" class="table table-hover "  width="100%"></table><div id="order_pager" style="height:30px;"></div>');
+		var $table = $("#order_table");
+		var settings = {}
+		var userColModel = [
+	        { label: 'ID', name: 'orderId', width: 200, align:'center', key:true, editable:false,editoptions:{readonly:true,size:10},hidden:true},
+	        { label: '产品名称', name: 'produceName', width: 300, align:'center', editable:true, editrules:{required:true}, editoptions:{size:20}},
+	        { label: '生产日期', name: 'productDate',width:300, align:'center',formatter:function(cellValue, options, rowObject){
+	        	return new Date(cellValue).pattern("yyyy-MM-dd");
+	        }, editable:true, editrules:{required:true}, editoptions:{size:20}},
+	        //aaa 是虚构的
+	        { label: '操作', sortable: false, name: 'aaa', width: 150 ,align:'center',
+	        	formatter: function(cellValue, options, rowObject)
+	        	{
+	            	return '<a class="success-info" onclick="window.operate('+options.rowId+','+rowObject.orderId+')" >操作'+rowObject.orderId+'</a>';
+	        	},
+	        	editable:true, editrules:{required:true}, editoptions:{size:20}
+	        }
+	    ];
+		$table.jqGrid({
+	        url: '/loadProducts',
+	        mtype: "POST",
+	        postData:settings,
+	        datatype: "json",
+	        colModel: userColModel,
+	        rowNum: 5,
+	        shrinkToFit: false,
+	        viewrecords: true,
+	        gridview: true,
+	        sortable:false,
+	        width:1020,
+	        height:200,
+	    	page: 1,
+			scroll: 1,
+	        loadui: "Disable",
+	        sortname:'orderId',
+	        sortorder:'asc',
+	        recordtext : "记录 {0} ~ {1} | 总记录数 {2}",//显示记录数的格式
+	        emptyrecords : "",//空记录时的提示信息
+	        pgtext : "{0}/{1}",//页数显示格式
+	        pager: "#order_pager",
+	        rownumbers: true, //可自动在表格前面添加序号
+	        rownumWidth:50,
+	        caption: "<h2><b>滚动鼠标加载数据</b></h2>",
+	        editurl:'/modifyProduct',
+	        jsonReader: {
+	        	root:'rows',
+	        	page:'page',
+	        	total:'total',
+	        	records:'records',
+	        	repeattimes:false,
+	        	cell:'cell',
+	        	id:'id'
+	        }
+	    });
+	
+		//添加行号
+		
+	    $table.jqGrid('setLabel', 'rn', '序号', {'text-align':'center','vertical-align': 'center'}, {'title':'序号'});
+	    for (var i = 0; i < userColModel.length; i++) {
+	        var model = userColModel[i];
+	        $table.jqGrid('setLabel', model.name, model.label, {'text-align' : 'center' }, {'title':model.label});
+	    }
+	    
+	    //添加操作的按钮
+	    
+	    $table.jqGrid('navGrid','#order_pager',
+				{edit:false,add:false,del:false,search:true},
+				{ },
+		        { },
+		        { }, 
+				{ 
+			    	sopt:['eq', 'ne', 'lt', 'gt', 'cn', 'bw', 'ew'],
+			        closeOnEscape: true, 
+			        multipleSearch: true, 
+			        closeAfterSearch: true 
+			    }
+		);
+			
+		$table.navButtonAdd('#order_pager', {
+			caption:"Add", 
+			buttonicon:"ui-icon-plus", 
+			onClickButton: addRow,
+			position: "last", 
+			title:"", 
+			cursor: "pointer"
+		});
+		
+		$table.navButtonAdd('#order_pager',  {
+			caption:"Edit", 
+			buttonicon:"ui-icon-pencil", 
+			onClickButton: editRow,
+			position: "last", 
+			title:"", 
+			cursor: "pointer"
+		});
+		
+		$table.navButtonAdd('#order_pager', {
+			caption:"Delete", 
+			buttonicon:"ui-icon-trash", 
+			onClickButton: deleteRow,
+			position: "last", 
+			title:"", 
+			cursor: "pointer"
+		});
+		$("#btnFilter").click(function(){
+			$table.jqGrid('searchGrid', {multipleSearch: false,  sopt:['eq']});
+		});
+		// Toolbar Search
+		//$table.jqGrid('filterToolbar',{stringResult: true,searchOnEnter : true, defaultSearch:"cn"});
+	    
+	})();
+});
+
+
+function deleteRow(){}
+function editRow(){}
+function addRow(){}
+</script>
+</body>
+</html>

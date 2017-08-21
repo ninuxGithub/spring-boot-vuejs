@@ -137,7 +137,9 @@ $(function(){
 	            var subgrid_table_id;
 	            subgrid_table_id = subgrid_id+"_t";
 	            jQuery("#"+subgrid_table_id).remove();
-	        }
+	        },
+	        editurl:'/modifyUser'
+	        
 	        
 	       //======================subGrid over================================================
 	    });
@@ -147,6 +149,11 @@ $(function(){
 	        var model = userColModel[i];
 	        $table.jqGrid('setLabel', model.name, model.label, {'text-align' : 'center' }, {'title':model.label});
 	    }
+	    //后台需要加入过滤
+// 	    $table.jqGrid('navGrid','#user_pager',{del:false,add:false,edit:false,search:false});
+// 		$table.jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+		
+		$table.jqGrid('navGrid','#user_pager',{});
 	})();
 	
 	
