@@ -9,6 +9,13 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/user/grid.locale-cn.js"></script>
 	<script src="/user/jquery.jqGrid.js"></script>
+	<style type="text/css">
+		.ui-jqgrid .ui-jqgrid-htable .ui-th-div {
+		    height: 17px;
+		    margin-top: 5px;
+		    text-align: center;
+		}
+	</style>
 </head>
 <body>
 
@@ -55,8 +62,6 @@ $(function(){
 	        postData:settings,
 	        datatype: "json",
 	        colModel: userColModel,
-	        
-	        
 	        rowNum: 10,
 	        shrinkToFit: false,
 	        viewrecords: true,
@@ -73,7 +78,68 @@ $(function(){
 	        pager: "#user_pager",
 	        rownumbers: true, //可自动在表格前面添加序号
 	        rownumWidth:50,
-	        caption: "<h2><b>点击按钮翻页</b></h2>"	
+	        caption: "<h2><b>点击按钮翻页</b></h2>",
+	       
+	        
+	        //==================subGrid begin=====================
+	        
+	        subGrid : true,
+	        subGridRowExpanded : function (subgrid_id, row_id) {
+	        	// we pass two parameters
+	            // subgrid_id is a id of the div tag created whitin a table data
+	            // the id of this elemenet is a combination of the "sg_" + id of the row
+	            // the row_id is the id of the row
+	            // If we wan to pass additinal parameters to the url we can use
+	            // a method getRowData(row_id) - which returns associative array in type name-value
+	            // here we can easy construct the flowing
+	            var subgrid_table_id,pager_id;
+	            subgrid_table_id = subgrid_id + "_t";
+	            pager_id = "p_" + subgrid_table_id;
+	            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
+	            jQuery("#" + subgrid_table_id).jqGrid({
+	                url : "/loadRoles?id=" + row_id,
+	                datatype : "json",
+	                colNames : ['RoleID', 'roleName', 'desc'],
+	                colModel : [
+	                    {
+	                        name : "id",
+	                        index : "id",
+	                        width : 50,
+	                        key : true,
+	                        align : "center"
+	                    },
+	                    {
+	                        name : "roleName",
+	                        index : "roleName",
+	                        width : 100,
+	                        align : "center"
+	                    },
+	                    {
+	                        name : "descrip",
+	                        index : "descrip",
+	                        width : 70,
+	                        align : "center"
+	                    },
+	                ],
+	                rowNum : 20,
+	                pager : pager_id,
+	                width:888,
+	                sortname : 'id',
+	                sortorder : "asc",
+	                height : '100%'
+	            });
+	            //禁止导航栏
+	            jQuery("#" + subgrid_table_id).jqGrid('navGrid',  "#" + pager_id,{ edit : false, add : false, del : false,search:false, refresh: false});
+	        },
+	        subGridRowColapsed : function (subgrid_id, row_id)
+	        {
+	            // this function is called before removing the data
+	            var subgrid_table_id;
+	            subgrid_table_id = subgrid_id+"_t";
+	            jQuery("#"+subgrid_table_id).remove();
+	        }
+	        
+	       //======================subGrid over================================================
 	    });
 	
 	    $table.jqGrid('setLabel', 'rn', '序号', {'text-align':'center','vertical-align': 'center'}, {'title':'序号'});
@@ -83,16 +149,15 @@ $(function(){
 	    }
 	})();
 	
+	
+	//第二种方式的表格展示
 	(function initUserTable(){
 		$.jgrid.defaults.width = 780;
 		$.jgrid.defaults.responsive = true;
 		$.jgrid.defaults.styleUI = 'Bootstrap';
-		
 		$("#user_table_div2").empty().html('<table id="user_table2" class="table table-hover "  width="100%"></table><div id="user_pager2" style="height:30px;"></div>');
 		var $table = $("#user_table2");
-		
 		var settings = {}
-		
 		var userColModel = [
 	        { label: 'ID', name: 'id', width: 200, align:'center', key:true},
 	        { label: '用户名称', name: 'username', width: 300, align:'center'},
@@ -105,7 +170,6 @@ $(function(){
 	        	}
 	        }
 	    ];
-		
 		$table.jqGrid({
 	        url: '/loadUsers',
 	        mtype: "POST",
@@ -139,11 +203,7 @@ $(function(){
 	        $table.jqGrid('setLabel', model.name, model.label, {'text-align' : 'center' }, {'title':model.label});
 	    }
 	})();
-	
-	
 });
-
-
 </script>
 </body>
 </html>

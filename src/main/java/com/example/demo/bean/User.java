@@ -1,11 +1,18 @@
 package com.example.demo.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -30,6 +37,12 @@ public class User implements Serializable {
 	private String password;
 
 	private String role;
+
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@JoinTable(name = "user_roles", joinColumns = {
+			@JoinColumn(name = "userId", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "roleId", referencedColumnName = "id") })
+	private List<Role> roles = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -63,9 +76,25 @@ public class User implements Serializable {
 		this.role = role;
 	}
 
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + ", roles="
+				+ roles + "]";
 	}
+	
+	
+
+//	@Override
+//	public String toString() {
+//		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+//	}
 
 }

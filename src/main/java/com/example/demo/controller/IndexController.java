@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.bean.CallBack;
+import com.example.demo.bean.Role;
 import com.example.demo.bean.User;
 import com.example.demo.repository.UserRepository;
 
@@ -31,6 +32,9 @@ public class IndexController {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+//	@Autowired
+//	private RoleRepository roleRepository;
 
 	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 	public String index() {
@@ -56,6 +60,19 @@ public class IndexController {
 		return map;
 	}
 
+//		List<Role> roles = new ArrayList<>();
+//		roles.add(new Role(1L, "ROLE_ADMIN", "最高权限管理者"));
+//		roles.add(new Role(2L, "ROLE_USER", "普通用户"));
+//		roles.add(new Role(3L, "ROLE_MANAGER", "经理用户"));
+//		roles.add(new Role(4L, "ROLE_SYS", "系统管理员"));
+//		user.setRoles(roles);
+//		for (Role role : roles) {
+//			roleRepository.save(role);
+//		}
+//		List<Role> roles = roleRepository.findAll();
+//		for (User user : list) {
+//			userRepository.save(user);
+//		}
 	/**
 	 * 为jqgrid 提供数据的请求
 	 * @param rows
@@ -72,9 +89,20 @@ public class IndexController {
 			@RequestParam(value = "sidx", required = false, defaultValue="id") String sidx,
 			@RequestParam(value = "sord", required = false) String sord) {
 		logger.info("rows:"+rows+"  page:"+page+"  sidx:" +sidx+"  sord:"+sord);
+		
+		
 		List<User> list = userRepository.findAll();
+		
 		CallBack<User> handListPage = handListPage(rows, page, sidx, sord, list);
 		return handListPage;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/loadRoles", method = RequestMethod.GET)
+	public List<Role> loadRoles(@RequestParam("id") Long id) {
+		List<Role> roles = userRepository.findOne(id).getRoles();
+		return roles;
 	}
 
 	/**
@@ -156,14 +184,4 @@ public class IndexController {
 		User user = userRepository.findOne(id);
 		return user;
 	}
-	// @ResponseBody
-	// @RequestMapping(value = "/getUser/{id}", method = RequestMethod.GET)
-	// public User getUser(@PathVariable(required=false) Long id) {
-	// logger.info("getUser id is : {}", id);
-	// if(null == id|| id==-1){
-	// return new User();
-	// }
-	// User user = userRepository.findOne(id);
-	// return user;
-	// }
 }
