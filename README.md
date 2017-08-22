@@ -54,7 +54,8 @@ public static List<ExcelFieldBean> analyseExcelField(Class<?> clazz) {
 	//排序
 	Collections.sort(excleFieldBeanList);
 	return excleFieldBeanList;
-}```java
+}
+```java
 		
 		
 		
