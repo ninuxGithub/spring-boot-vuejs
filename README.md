@@ -34,6 +34,12 @@ vuejs 增删改查的demo，自动建表 <br>
 ## JQgrid
 ![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/jQgridTable.png)
 
+## JQgrid 增删改查的demo
+	项目启动后的链接地址：http://localhost/user/orders.html<br/>
+	效果：
+![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/jqgrid-curd.png)
+
+
 
 
 		

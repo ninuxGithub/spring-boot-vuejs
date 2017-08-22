@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.bean.CallBack;
+import com.example.demo.bean.CustomGenericResponse;
+import com.example.demo.bean.JqFilter;
 import com.example.demo.bean.Order;
 import com.example.demo.bean.Role;
+import com.example.demo.bean.Rule;
 import com.example.demo.bean.User;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
+import com.google.gson.Gson;
 
 @Controller
 public class IndexController {
@@ -109,8 +113,27 @@ public class IndexController {
 			@RequestParam(value = "rows", required = false) Integer rows,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "sidx", required = false, defaultValue="id") String sidx,
-			@RequestParam(value = "sord", required = false) String sord) {
+			@RequestParam(value = "sord", required = false) String sord,
+			@RequestParam(value = "filters", required = false) String filters) {
 		logger.info("rows:"+rows+"  page:"+page+"  sidx:" +sidx+"  sord:"+sord);
+		
+		
+		// {"groupOp":"AND","rules":[{"field":"productDate","op":"bw","data":"2011-1-1"},{"field":"stockAmount","op":"gt","data":"100"}]}
+		logger.info("logger is {}", filters);
+
+		if(null != filters){
+			Gson gson = new Gson();
+			JqFilter jqFilter = gson.fromJson(filters, JqFilter.class);
+			
+			List<Rule> roles = jqFilter.getRules();
+			if(null != roles && roles.size()>0){
+				for (Rule rule : roles) {
+					logger.info("过滤条件 field:{} op:{}, data:{},  ",rule.getField(), rule.getOp(), rule.getData());
+					//过滤步骤省略.....
+				}
+			}
+		}
+		
 		
 		
 		List<Order> list = orderRepository.findAll();
@@ -130,10 +153,36 @@ public class IndexController {
 	
 	@ResponseBody
 	@RequestMapping(value="/modifyProduct", method=RequestMethod.POST)
-	public List<Order> modify(@RequestParam("oper") String oper, @RequestParam(value="id", required=false) Long id){
-		System.out.println(oper + " --"+ id);
-		List<Order> list = orderRepository.findAll();
-		return list; 
+	public CustomGenericResponse modify(@RequestParam("id") Long orderId, @RequestParam("oper") String operation , Order order){
+		Order save=null;
+		if(orderId != null && operation.equals("edit")){
+			order.setOrderId(orderId);
+			System.out.println("modify: "+order);
+			save = orderRepository.saveAndFlush(order);
+		}else if(null == orderId && operation.equals("add")){
+			System.out.println("add: "+ order);
+			save = orderRepository.save(order);
+		}else if(null != orderId && operation.equals("del")){
+			System.out.println("del: "+ order);
+			orderRepository.delete(orderId);
+			//save 成功删除后不可以为空
+			save = order;
+		}
+		
+		if(null != save){
+			Boolean success = save!=null;
+			if (success == true) {
+				CustomGenericResponse response = new CustomGenericResponse();
+				response.setSuccess(true);
+				response.setMessage("Action successful!");
+				return response;
+				
+			}
+		}
+		CustomGenericResponse response = new CustomGenericResponse();
+		response.setSuccess(false);
+		response.setMessage("Action failure!");
+		return response;
 	}
 
 	/**
