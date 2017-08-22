@@ -66,6 +66,10 @@ public class Order implements Serializable {
 	private Integer stockAmount;
 	
 	
+	private Double price;
+	
+	
+	
 	private String headPortrait;
 	
 	
