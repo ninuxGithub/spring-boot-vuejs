@@ -21,21 +21,23 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table(name = "user")
 public class User implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 8859547318519046581L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@ExcelField(title="用户ID", order=1)
 	private Long id;
 
 	@NotEmpty
+	@ExcelField(title="用户名称", order=2)
 	private String username;
 
 	@NotEmpty
+	@ExcelField(title="用户密码", order=3)
 	private String password;
 
+	@ExcelField(title="用户角色", order=4)
 	private String role;
 
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)

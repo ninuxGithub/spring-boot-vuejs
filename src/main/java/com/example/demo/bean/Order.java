@@ -36,6 +36,7 @@ public class Order implements Serializable {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@ExcelField(title="订单ID", order=1)
 	private Long orderId;
 
 	/**
@@ -43,6 +44,7 @@ public class Order implements Serializable {
 	 */
 	@NotEmpty(message = "产品名称不可以为空")
 	@Size(max = 30, message = "产品名称不可以超过30个字符")
+	@ExcelField(title="产品名称", order=2)
 	private String produceName;
 
 	/**
@@ -50,6 +52,7 @@ public class Order implements Serializable {
 	 */
 	@DateTimeFormat(pattern = "yyyy-MM-dd", iso=ISO.DATE)
 	@Past(message = "必须是过往的时间")
+	@ExcelField(title="生产日期", order=3)
 	private Date productDate;
 
 	/**
@@ -57,15 +60,18 @@ public class Order implements Serializable {
 	 */
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Future(message = "必须是未来的时间")
+	@ExcelField(title="保质期", order=4)
 	private Date qualityGuaranteePeriod;
 
 	/**
 	 * 库存
 	 */
 	@NotNull
+	@ExcelField(title="库存量", order=5)
 	private Integer stockAmount;
 	
 	
+	@ExcelField(title="单价", order=6)
 	private Double price;
 	
 	

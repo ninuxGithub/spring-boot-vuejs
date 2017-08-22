@@ -2,6 +2,9 @@ package com.example.demo.utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +19,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.example.demo.bean.ExcelField;
+import com.example.demo.bean.ExcelFieldBean;
 
 public class ExcelUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
@@ -47,20 +53,21 @@ public class ExcelUtil {
 	 * @param fields javaBean 属性字段
 	 * @param titles 表格标题
 	 */
-	public static <T> void drawExcel(List<T> list, HSSFWorkbook wb, HSSFSheet sheet, String[] fields, String[] titles) {
-		logger.info("===>开启填充sheet....");
-		if(fields.length != titles.length){
-			throw new RuntimeException("[==>表后的标题和字段数量无法对应起来,两者必须相等]");
-		}
+	public static <T> void drawExcel(List<T> list, HSSFWorkbook wb, HSSFSheet sheet, Class<?> clazz) {
+		
+		logger.info("===>开启填充 {} sheet....", clazz.getName());
+		
+		List<ExcelFieldBean> excleFieldBeanList = analyseExcelField(clazz);
+		
 		Row row = null;
 		Cell cell = null;
 		row = sheet.createRow(getLocalRow());
 		HSSFCellStyle style = bodyStyle(wb);
 		HSSFCellStyle titleStyle = titleStyle(wb);
 		// 填充表头，不考虑复杂表头的情况
-		for (int t = 0; t < titles.length; t++) {
+		for (int t = 0; t < excleFieldBeanList.size(); t++) {
 			cell = row.createCell(t);
-			cell.setCellValue(titles[t]);
+			cell.setCellValue(excleFieldBeanList.get(t).getTitle());
 			cell.setCellStyle(titleStyle);
 		}
 		// 画完标题后行号+1
@@ -70,9 +77,9 @@ public class ExcelUtil {
 			row = sheet.createRow(getLocalRow());
 			increaseRow();
 
-			for (int f = 0; f < fields.length; f++) {
+			for (int f = 0; f < excleFieldBeanList.size(); f++) {
 				cell = row.createCell(f);
-				String field = fields[f];
+				String field = excleFieldBeanList.get(f).getFiled();
 				Object value = ReflectUtil.getTypeField(list.get(i), field);
 				if (null == value) {
 					value = "--";
@@ -84,6 +91,30 @@ public class ExcelUtil {
 			}
 		}
 
+	}
+
+	/**
+	 * 分析javaBean 中的属性是否采用了@ExcelField注解，如果含有该注解，提取注解信息
+	 * @param clazz
+	 * @return
+	 */
+	public static List<ExcelFieldBean> analyseExcelField(Class<?> clazz) {
+		List<ExcelFieldBean> excleFieldBeanList = new ArrayList<>();
+		for(Class<?> c = clazz; c != Object.class; c = c.getSuperclass()){
+			Field[] declaredFields = c.getDeclaredFields();
+			for (Field field : declaredFields) {
+				if(field.isAnnotationPresent(ExcelField.class)){
+					ExcelField excelField = field.getAnnotation(ExcelField.class);
+					ExcelFieldBean excelFieldBean = new ExcelFieldBean(excelField.title(), excelField.order(), field.getName(), field.getType());
+					excleFieldBeanList.add(excelFieldBean);
+				}
+				
+			}
+		}
+		
+		//排序
+		Collections.sort(excleFieldBeanList);
+		return excleFieldBeanList;
 	}
 
 	public static ServletOutputStream getExcleOutputStream(HttpServletResponse response, String excleName)
@@ -136,5 +167,6 @@ public class ExcelUtil {
 	public static void freezeFirstRow(HSSFSheet sheet) {
 		sheet.createFreezePane(0, 1, 0, 1);
 	}
+
 
 }

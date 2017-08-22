@@ -35,6 +35,7 @@ public class ExportExcelController {
 
 	@RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
 	public void exportExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		logger.info("开始导出Excel....");
 		List<Order> orders = orderRepository.findAll();
 		List<User> users = userRepository.findAll();
 		try {
@@ -42,17 +43,11 @@ public class ExportExcelController {
 			HSSFSheet sheet = wb.createSheet("风控报表1");
 			sheet.setDefaultColumnWidth(15);// 15个字符
 
-			String[] fields = new String[] { "orderId", "produceName", "productDate", "qualityGuaranteePeriod","stockAmount","price" };
-			String[] titles = new String[] { "订单ID", "产品名称", "生产日期", "保质期","库存" ,"价格"};
-			ExcelUtil.drawExcel(orders, wb, sheet, fields, titles);
-			logger.info("==>current row is : {}", ExcelUtil.getLocalRow());
+			ExcelUtil.drawExcel(orders, wb, sheet, Order.class);
 
 			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
 
-			String[] fields2 = new String[] { "id", "username", "password", "role" };
-			String[] titles2 = new String[] { "用户ID", "用户名称", "密码", "角色" };
-			ExcelUtil.drawExcel(users, wb, sheet, fields2, titles2);
-			logger.info("==>current row is : {}", ExcelUtil.getLocalRow());
+			ExcelUtil.drawExcel(users, wb, sheet, User.class);
 
 			// 锁住第一列
 			ExcelUtil.freezeFirstRow(sheet);
