@@ -27,6 +27,14 @@ vuejs 增删改查的demo，自动建表 <br>
 		
 		jqgrid 数据展示
 		
+		jqgrid 增删改查
+		
+		gons json转对象
+		
+		Excel导出 demo 
+		
+		
+		
 ## 效果图片
 ![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/vue.png)
 

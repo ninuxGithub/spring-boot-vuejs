@@ -125,6 +125,8 @@ public class IndexController {
 			Gson gson = new Gson();
 			JqFilter jqFilter = gson.fromJson(filters, JqFilter.class);
 			
+			//gson.fromJson(filters,  new TypeToken<Collection<JqFilter>>(){}.getType());
+			
 			List<Rule> roles = jqFilter.getRules();
 			if(null != roles && roles.size()>0){
 				for (Rule rule : roles) {
