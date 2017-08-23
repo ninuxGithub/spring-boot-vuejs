@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -22,6 +21,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.example.demo.bean.ExcelCell;
+import com.example.demo.bean.ExcelRow;
 import com.example.demo.bean.Order;
 import com.example.demo.bean.User;
 import com.example.demo.repository.OrderRepository;
@@ -55,41 +56,49 @@ public class ExportExcelController {
 
 			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
 			
-//			for(int i=0; i<7; i++){
-//				CellRangeAddress region = new CellRangeAddress(ExcelUtil.getLocalRow(), ExcelUtil.getLocalRow()+1 , (short) i, (short)i ); 
-//				region.
-//			}
-			
 			String[] head0 = new String[]{"日期","组合名称","组合收益率","业绩基准","净值损线"};
-			String[] head1 = new String[]{"本期","今年以来","本期","今年以来"};
+			String[] head1 = new String[]{"本期","今年以来","本期2","今年以来2"};
 			
 			Row row = null;
 			Cell cell = null;
 			HSSFCellStyle titleStyle = ExcelUtil.titleStyle(wb);
-			row = sheet.createRow(ExcelUtil.getLocalRow());
-			for(int i=0; i<7; i++){
-				cell = row.createCell(i);
-				cell.setCellValue(head0[i]);
-				cell.setCellStyle(titleStyle);
-			}
-			
-			
+			CellRangeAddress region = null;
 			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
 			row = sheet.createRow(ExcelUtil.getLocalRow());
-			Integer[] merges = new Integer[]{0,1,6};
-			List<Integer> mergeList = Arrays.asList(merges);
-			for(int i=0; i<7; i++){
-				if(mergeList.contains(i)){
-					
-				}else{
-					cell = row.createCell(i);
-					cell.setCellValue(head1[i]);
-				}
-				cell.setCellStyle(titleStyle);
-			}
 			
+			List<ExcelRow> headerRows = new LinkedList<>();
+			ExcelRow excelRow= new ExcelRow();
+			LinkedList<ExcelCell> cellList = new LinkedList<>();
+			cellList.add(new ExcelCell("日期",2,1));
+			cellList.add(new ExcelCell("组合名称",2,1));
+			cellList.add(new ExcelCell("组合收益率",2,1));
+			cellList.add(new ExcelCell("业绩基准",2,1));
+			cellList.add(new ExcelCell("净值损线",2,1));
+			excelRow.setRows(cellList);
+			headerRows.add(excelRow);
+			
+			excelRow= new ExcelRow();
+			cellList = new LinkedList<>();
+			cellList.add(new ExcelCell("日期",2,1));
+			cellList.add(new ExcelCell("组合名称",2,1));
+			cellList.add(new ExcelCell("组合收益率",2,1));
+			cellList.add(new ExcelCell("业绩基准",2,1));
+			cellList.add(new ExcelCell("净值损线",2,1));
+			excelRow.setRows(cellList);
+			headerRows.add(excelRow);
+			
+			
+			
+			
+			
+			
+			
+			//#####################################
+			//drawExcelHeader(sheet, head0, head1, row, titleStyle);
+			//#####################################
 			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
-
+			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
+			
 			ExcelUtil.drawExcel(users, wb, sheet, User.class);
 
 			// 锁住第一列
@@ -105,6 +114,80 @@ public class ExportExcelController {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void drawExcelHeader(HSSFSheet sheet, String[] head0, String[] head1, Row row, HSSFCellStyle titleStyle) {
+		Cell cell;
+		CellRangeAddress region;
+		cell =row.createCell(0);
+		cell.setCellValue(head0[0]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(1);
+		cell.setCellValue(head0[1]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(2);
+		cell.setCellValue(head0[2]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(3);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(4);
+		cell.setCellValue(head0[3]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(5);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(6);
+		cell.setCellValue(head0[4]);
+		cell.setCellStyle(titleStyle);
+		
+		region = new CellRangeAddress(ExcelUtil.getLocalRow(), ExcelUtil.getLocalRow()+1, (short) 0, (short) 0);
+		sheet.addMergedRegion(region);
+		
+		region = new CellRangeAddress(ExcelUtil.getLocalRow(), ExcelUtil.getLocalRow()+1, (short) 1, (short) 1);
+		sheet.addMergedRegion(region);
+		
+		region = new CellRangeAddress(ExcelUtil.getLocalRow(), ExcelUtil.getLocalRow(), (short) 2, (short) 3);
+		sheet.addMergedRegion(region);
+		
+		region = new CellRangeAddress(ExcelUtil.getLocalRow(), ExcelUtil.getLocalRow(), (short) 4, (short) 5);
+		sheet.addMergedRegion(region);
+		
+		region = new CellRangeAddress(ExcelUtil.getLocalRow(), ExcelUtil.getLocalRow()+1, (short) 6, (short) 6);
+		sheet.addMergedRegion(region);
+		
+		ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
+		row = sheet.createRow(ExcelUtil.getLocalRow());
+		
+		
+		cell =row.createCell(0);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(1);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(2);
+		cell.setCellValue(head1[0]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(3);
+		cell.setCellValue(head1[1]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(4);
+		cell.setCellValue(head1[2]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(5);
+		cell.setCellValue(head1[3]);
+		cell.setCellStyle(titleStyle);
+		
+		cell =row.createCell(6);
+		cell.setCellStyle(titleStyle);
 	}
 
 }

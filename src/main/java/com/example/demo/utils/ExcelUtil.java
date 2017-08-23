@@ -194,6 +194,7 @@ public class ExcelUtil {
 		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
 		style.setFont(font);
 		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 		return style;
 	}
 
