@@ -35,27 +35,79 @@ vuejs 增删改查的demo，自动建表 <br>
 		
 		
 		今天从Excel4J源代码发现可以通过注解的方式在JavaBean中来标记想要导出Excel的字段，具体代码如下：
+		在注解类加入了表头标题， 日期格式化，数字格式化， 以及文字居中的设置，开启用户自定义的选择
 		
 ```java
-public static List<ExcelFieldBean> analyseExcelField(Class<?> clazz) {
-	List<ExcelFieldBean> excleFieldBeanList = new ArrayList<>();
-	for(Class<?> c = clazz; c != Object.class; c = c.getSuperclass()){
-		Field[] declaredFields = c.getDeclaredFields();
-		for (Field field : declaredFields) {
-			if(field.isAnnotationPresent(ExcelField.class)){
-				ExcelField excelField = field.getAnnotation(ExcelField.class);
-				ExcelFieldBean excelFieldBean = new ExcelFieldBean(excelField.title(), excelField.order(), field.getName(), field.getType());
-				excleFieldBeanList.add(excelFieldBean);
+	public static List<ExcelFieldBean> analyseExcelField(Class<?> clazz) {
+		List<ExcelFieldBean> excleFieldBeanList = new ArrayList<>();
+		for(Class<?> c = clazz; c != Object.class; c = c.getSuperclass()){
+			Field[] declaredFields = c.getDeclaredFields();
+			for (Field field : declaredFields) {
+				if(field.isAnnotationPresent(ExcelField.class)){
+					ExcelField excelField = field.getAnnotation(ExcelField.class);
+					ExcelFieldBean excelFieldBean = new ExcelFieldBean(excelField.title(), excelField.order(), field.getName(), field.getType());
+					excleFieldBeanList.add(excelFieldBean);
+				}
+				
 			}
-			
-		}
 	}
-	
 	//排序
 	Collections.sort(excleFieldBeanList);
 	return excleFieldBeanList;
 }
 ```		
+
+## Excel 一些常用的API
+from:http://blog.csdn.net/spp_1987/article/details/13769043  
+HSSFCellStyle cellStyle = wb.createCellStyle();    
+### 一、设置背景色:  
+  
+  
+cellStyle.setFillForegroundColor((short) 13);// 设置背景色    
+cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);    
+### 二、设置边框:  
+  
+  
+cellStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN); //下边框    
+cellStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);//左边框    
+cellStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);//上边框    
+cellStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);//右边框    
+### 三、设置居中:  
+  
+  
+cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中    
+### 四、设置字体:  
+HSSFFont font = wb.createFont();    
+font.setFontName("黑体");    
+font.setFontHeightInPoints((short) 16);//设置字体大小    
+    
+HSSFFont font2 = wb.createFont();    
+font2.setFontName("仿宋_GB2312");    
+font2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);//粗体显示    
+font2.setFontHeightInPoints((short) 12);    
+    
+cellStyle.setFont(font);//选择需要用到的字体格式    
+### 五、设置列宽:  
+  
+sheet.setColumnWidth(0, 3766);   
+//第一个参数代表列id(从0开始),第2个参数代表宽度值  参考 ："2012-08-10"的宽度为2500    
+### 六、设置自动换行:  
+  
+cellStyle.setWrapText(true);//设置自动换行    
+### 七、合并单元格:  
+  
+Region region1 = new Region(0, (short) 0, 0, (short) 6);//参数1：行号 参数2：起始列号 参数3：行号 参数4：终止列号    
+//此方法在POI3.8中已经被废弃，建议使用下面一个    
+或者用  
+CellRangeAddress region1 = new CellRangeAddress(rowNumber, rowNumber, (short) 0, (short) 11);     
+  
+  
+//参数1：起始行 参数2：终止行 参数3：起始列 参数4：终止列      
+但应注意两个构造方法的参数不是一样的，具体使用哪个取决于POI的不同版本。   
+  
+  
+sheet.addMergedRegion(region1);    
+
 		
 		
 ## 效果图片

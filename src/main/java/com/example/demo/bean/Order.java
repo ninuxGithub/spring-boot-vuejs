@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -71,7 +72,7 @@ public class Order implements Serializable {
 	private Integer stockAmount;
 	
 	
-	@ExcelField(title="单价", order=6)
+	@ExcelField(title="单价", order=6,textAlign=CellStyle.ALIGN_RIGHT, numberPattern="￥#,###,##0.000")
 	private Double price;
 	
 	

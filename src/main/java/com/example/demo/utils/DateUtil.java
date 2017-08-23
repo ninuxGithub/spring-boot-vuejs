@@ -20,4 +20,9 @@ public class DateUtil {
 		return localTimeFormat.get();
 	}
 
+	public static Object formatDate(Object value, String datePattern) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
+		return simpleDateFormat.format(value);
+	}
+
 }
