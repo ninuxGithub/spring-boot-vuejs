@@ -108,6 +108,16 @@ CellRangeAddress region1 = new CellRangeAddress(rowNumber, rowNumber, (short) 0,
   
 sheet.addMergedRegion(region1);    
 
+
+### 反射：
+Class c = ArrayList.class;
+
+c.isPrimitive(); //判断c是否为基本数据类型
+
+c.isAssignableFrom(List.class);  //判断c是否是List类的子类或父类
+
+c.getGenericType(); //得到泛型类型
+
 		
 		
 ## 效果图片
