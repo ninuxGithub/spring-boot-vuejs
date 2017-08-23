@@ -28,6 +28,9 @@ public class ExcelUtil {
 
 	private static final String DEFAULTVALUE = "--";
 
+	/**
+	 * 当前的行数
+	 */
 	private static ThreadLocal<Integer> localRow = new ThreadLocal<Integer>() {
 
 		@Override
@@ -37,10 +40,17 @@ public class ExcelUtil {
 
 	};
 
+	/**
+	 * 获取当前wb填充到哪一行了
+	 * @return
+	 */
 	public static Integer getLocalRow() {
 		return localRow.get();
 	}
 
+	/**
+	 * excel行数往下退一行，行数递增
+	 */
 	public static void increaseRow() {
 		Integer row = localRow.get();
 		localRow.set(row + 1);
@@ -187,10 +197,18 @@ public class ExcelUtil {
 		return style;
 	}
 
+	/**
+	 * 锁定第一列
+	 * @param sheet
+	 */
 	public static void freezeFirstColumn(HSSFSheet sheet) {
 		sheet.createFreezePane(1, 0, 1, 0);
 	}
 
+	/**
+	 * 锁定第一行
+	 * @param sheet
+	 */
 	public static void freezeFirstRow(HSSFSheet sheet) {
 		sheet.createFreezePane(0, 1, 0, 1);
 	}
