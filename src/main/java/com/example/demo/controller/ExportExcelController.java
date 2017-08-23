@@ -54,9 +54,11 @@ public class ExportExcelController {
 
 			// 获取输出了，设置excel名称
 			ServletOutputStream outputStream = ExcelUtil.getExcleOutputStream(response, "风控报表1");
+			
+			//写入到响应刘
 			wb.write(outputStream);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 	}
