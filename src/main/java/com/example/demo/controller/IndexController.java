@@ -127,11 +127,13 @@ public class IndexController {
 			
 			//gson.fromJson(filters,  new TypeToken<Collection<JqFilter>>(){}.getType());
 			
-			List<Rule> roles = jqFilter.getRules();
-			if(null != roles && roles.size()>0){
-				for (Rule rule : roles) {
-					logger.info("过滤条件 field:{} op:{}, data:{},  ",rule.getField(), rule.getOp(), rule.getData());
-					//过滤步骤省略.....
+			if(null != jqFilter){
+				List<Rule> roles = jqFilter.getRules();
+				if(null != roles && roles.size()>0){
+					for (Rule rule : roles) {
+						logger.info("过滤条件 field:{} op:{}, data:{},  ",rule.getField(), rule.getOp(), rule.getData());
+						//过滤步骤省略.....
+					}
 				}
 			}
 		}
