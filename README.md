@@ -57,6 +57,47 @@ vuejs 增删改查的demo，自动建表 <br>
 }
 ```		
 
+		还有一个核心的方法，那就是构造多行不规则的表头的问题，比较复杂， 需要实现接口ExcelHeaderData ， 需要实现方法buildHeaderDataList()
+```java
+	public static void buildTableHeader(HSSFWorkbook wb, HSSFSheet sheet, ExcelHeaderData excelHeaderData, int rownum) {
+		List<ExcelRow> headerRows = excelHeaderData.buildHeaderDataList();
+		int totalCols = getTotalCols(headerRows);
+		logger.trace("totalColspan :" + totalCols);
+
+		HSSFCellStyle titleStyle = ExcelUtil.titleStyle(wb);
+		for (int r = 0; r < headerRows.size(); r++) {
+			Row row = null;
+			Cell cell = null;
+			row = sheet.createRow(rownum + r);
+			increaseRow();//增加行
+			ExcelRow excelRow = headerRows.get(r);
+			LinkedList<ExcelCell> rows = excelRow.getRows();
+			for (int c = 0; c < totalCols; c++) {
+				ExcelCell excelCell = rows.get(c);
+				int colspan = excelCell.getColspan();
+				int rowspan = excelCell.getRowspan();
+				String title = excelCell.getTitle();
+				int colIndex = excelCell.getColIndex();
+
+				cell = row.createCell(c);
+				cell.setCellStyle(titleStyle);
+				if (colIndex == c) {
+					if(null != title){
+						cell.setCellValue(title);
+					}
+					if (rowspan > 1 || colspan > 1) {
+						CellRangeAddress region = new CellRangeAddress(rownum + r, rownum + r + rowspan - 1, c, c + colspan - 1);
+						sheet.addMergedRegion(region);
+					}
+				}
+			}
+		}
+	}
+```
+
+
+
+
 ## Excel 一些常用的API
 from:http://blog.csdn.net/spp_1987/article/details/13769043  
 HSSFCellStyle cellStyle = wb.createCellStyle();    
