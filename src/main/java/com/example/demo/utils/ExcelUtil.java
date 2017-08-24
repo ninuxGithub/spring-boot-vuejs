@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -17,13 +18,18 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.demo.bean.ExcelCell;
 import com.example.demo.bean.ExcelField;
 import com.example.demo.bean.ExcelFieldBean;
+import com.example.demo.bean.ExcelRow;
+import com.example.demo.controller.ExcelHeaderData;
 
 public class ExcelUtil {
+
 	private static final Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
 
 	private static final String DEFAULTVALUE = "--";
@@ -42,6 +48,7 @@ public class ExcelUtil {
 
 	/**
 	 * 获取当前wb填充到哪一行了
+	 * 
 	 * @return
 	 */
 	public static Integer getLocalRow() {
@@ -106,7 +113,7 @@ public class ExcelUtil {
 				if (null == value) {
 					value = ExcelUtil.DEFAULTVALUE;
 				} else {
-					if (filedClazz==Date.class) {
+					if (filedClazz == Date.class) {
 						value = DateUtil.formatDate(value, datePattern);
 					} else if (filedClazz.isAssignableFrom(Number.class) || filedClazz.isAssignableFrom(Double.class)) {
 						value = NumberUtil.formatNumber(value, numberPattern);
@@ -200,6 +207,7 @@ public class ExcelUtil {
 
 	/**
 	 * 锁定第一列
+	 * 
 	 * @param sheet
 	 */
 	public static void freezeFirstColumn(HSSFSheet sheet) {
@@ -208,10 +216,65 @@ public class ExcelUtil {
 
 	/**
 	 * 锁定第一行
+	 * 
 	 * @param sheet
 	 */
 	public static void freezeFirstRow(HSSFSheet sheet) {
 		sheet.createFreezePane(0, 1, 0, 1);
+	}
+
+	// ====================如果是不规则的表格的表头====================================
+
+	public static void buildTableHeader(HSSFWorkbook wb, HSSFSheet sheet, ExcelHeaderData excelHeaderData, int rownum) {
+		List<ExcelRow> headerRows = excelHeaderData.buildHeaderDataList();
+		int totalCols = getTotalCols(headerRows);
+		logger.trace("totalColspan :" + totalCols);
+
+		HSSFCellStyle titleStyle = ExcelUtil.titleStyle(wb);
+		for (int r = 0; r < headerRows.size(); r++) {
+			Row row = null;
+			Cell cell = null;
+			row = sheet.createRow(rownum + r);
+			increaseRow();//增加行
+			ExcelRow excelRow = headerRows.get(r);
+			LinkedList<ExcelCell> rows = excelRow.getRows();
+			for (int c = 0; c < totalCols; c++) {
+				ExcelCell excelCell = rows.get(c);
+				int colspan = excelCell.getColspan();
+				int rowspan = excelCell.getRowspan();
+				String title = excelCell.getTitle();
+				int colIndex = excelCell.getColIndex();
+
+				cell = row.createCell(c);
+				cell.setCellStyle(titleStyle);
+				if (colIndex == c) {
+					if(null != title){
+						cell.setCellValue(title);
+					}
+					if (rowspan > 1 || colspan > 1) {
+						CellRangeAddress region = new CellRangeAddress(rownum + r, rownum + r + rowspan - 1, c, c + colspan - 1);
+						sheet.addMergedRegion(region);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param headerRows
+	 *            不规则表头一共有多少行
+	 * @return
+	 */
+	public static int getTotalCols(List<ExcelRow> headerRows) {
+		List<Integer> list = new ArrayList<>();
+		for (ExcelRow excelRow : headerRows) {
+			int total = 0;
+			for (ExcelCell excelCell : excelRow.getRows()) {
+				total += excelCell.getColspan();
+			}
+			list.add(total);
+		}
+		return Collections.max(list);
 	}
 
 }

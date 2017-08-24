@@ -8,6 +8,8 @@ public class ExcelCell {
 
 	private int colspan;
 
+	private int colIndex;
+
 	public ExcelCell() {
 	}
 
@@ -15,6 +17,13 @@ public class ExcelCell {
 		this.title = title;
 		this.rowspan = rowspan;
 		this.colspan = colspan;
+	}
+
+	public ExcelCell(String title, int rowspan, int colspan, int colIndex) {
+		this.title = title;
+		this.rowspan = rowspan;
+		this.colspan = colspan;
+		this.colIndex = colIndex;
 	}
 
 	public String getTitle() {
@@ -39,6 +48,14 @@ public class ExcelCell {
 
 	public void setColspan(int colspan) {
 		this.colspan = colspan;
+	}
+
+	public int getColIndex() {
+		return colIndex;
+	}
+
+	public void setColIndex(int colIndex) {
+		this.colIndex = colIndex;
 	}
 
 	@Override
