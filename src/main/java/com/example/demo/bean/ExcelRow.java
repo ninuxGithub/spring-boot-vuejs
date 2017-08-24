@@ -8,6 +8,9 @@ import java.util.LinkedList;
  */
 public class ExcelRow {
 
+	/**
+	 * excel 行对象， 每个行包含对个excel单元格，这些单元需要保证顺序（添加的顺序）所以采用了LinkedList
+	 */
 	private LinkedList<ExcelCell> rows;
 
 	public LinkedList<ExcelCell> getRows() {

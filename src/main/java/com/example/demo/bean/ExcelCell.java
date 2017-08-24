@@ -2,12 +2,24 @@ package com.example.demo.bean;
 
 public class ExcelCell {
 
+	/**
+	 * cell 标题
+	 */
 	private String title;
 
+	/**
+	 * 跨的行
+	 */
 	private int rowspan;
 
+	/**
+	 * 跨的列
+	 */
 	private int colspan;
 
+	/**
+	 * 出现在第几个单元格（脚本从0开始）， 在构造表格的时候需要规划好细节，比较繁琐，也没有更好的方法了
+	 */
 	private int colIndex;
 
 	public ExcelCell() {
