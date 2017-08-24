@@ -9,12 +9,13 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import com.example.demo.bean.ExcelCell;
-import com.example.demo.bean.ExcelRow;
-import com.example.demo.utils.ExcelUtil;
-import com.example.demo.utils.JsonUtil;
+import com.github.plugin.bean.ExcelCell;
+import com.github.plugin.bean.ExcelRow;
+import com.github.plugin.utils.ExcelUtil;
+import com.github.plugin.utils.JsonUtil;
 
-public class PluginText implements ExcelHeaderData{
+
+public class PluginText implements com.github.plugin.interfaces.ExcelHeaderData{
 
 	public static void main(String[] args) {
 		HSSFWorkbook wb = new HSSFWorkbook();
