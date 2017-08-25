@@ -12,6 +12,11 @@
     <link rel="stylesheet" type="text/css" href="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/css/ui.jqgrid.css" />
     <script type="text/javascript" src="/js/grid.locale-cn.js"></script>
 	<script src="/js/jquery.jqGrid.js"></script>
+	<style type="text/css">
+		.ui-th-column-header{
+			text-align: center;
+		}
+	</style>
 
     <script type="text/javascript">
         //<![CDATA[
@@ -56,6 +61,7 @@
             $table.jqGrid({
             	datatype:'local',
             	data:mydata2,
+            	colNames:['Name','Note', 'Amount', 'Invdate'],
             	colModel:[
             		{name:'name', index:'name', width:100, align:'center',
     					cellattr:function(rowId, tv, rowObject, cm, rdata){
@@ -89,6 +95,7 @@
 //             	sortname:'name',
             	caption:'Merge Cell Jqgrid Table',
             	height:'100%',
+            	width:440,
             	gridComplete:function(){
             		var gridName = "table";
             		mergeCell(gridName, 'name');
@@ -99,6 +106,30 @@
             	}
             	
             });
+            
+            $table.jqGrid('setGroupHeaders', {
+            	useColSpanStyle:true, 
+            	groupHeaders:[{ 
+            		titleText:'PersonInfo',
+            		numberOfColumns:2, 
+            		startColumnName:'name' 
+            	}]
+            });
+            
+//             $("#gridId").jqGrid("setGroupHeaders", {
+//                 useColSpanStyle : true ,//没有表头的列是否与表头所在行的空单元格合并
+//                 groupHeaders : [//{},{}...
+//                     {
+//                         startColumnName : "name1",//合并列的起始位置 colModel中的name
+//                         numberOfColumns : 2, //合并列数 包含起始列
+//                         titleText : "合并表头一"//表头
+//                     },{
+//                         startColumnName : "name2",
+//                         numberOfColumns : 3,
+//                         titleText : "合并表头二"
+//                     }
+//                 ]
+//             });
             
             
             function mergeCell(gridName, cellName){
