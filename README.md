@@ -29,6 +29,8 @@ vuejs 增删改查的demo，自动建表 <br>
 		
 		jqgrid 增删改查
 		
+		jqgrid [合并单元格：](http://www.cnblogs.com/puke/archive/2012/10/17/2728435.html)
+		
 		gons json转对象
 		
 		Excel导出 demo 

@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Just simple local grid</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/redmond/jquery-ui.css" /> -->
+    <link rel="stylesheet" href="/jquery-ui-1.12.1.custom/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/css/ui.jqgrid.css" />
+    <script type="text/javascript" src="/js/grid.locale-cn.js"></script>
+	<script src="/js/jquery.jqGrid.js"></script>
+
+<!--     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> -->
+
+<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/js/i18n/grid.locale-en.js"></script> -->
+
+<!--     <script type="text/javascript" src="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/js/jquery.jqGrid.src.js"></script> -->
+
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function() {
+            var mydata = [
+                    { id: "1", invdate: "2007-10-01", name: "test_test_test_test_test", note: "note", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "2", invdate: "2007-10-02", name: "test2222222222222222", note: "note2", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "3", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" },
+                    { id: "4", invdate: "2007-10-04", name: "test4444444444444444", note: "note4", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "5", invdate: "2007-10-31", name: "test5", note: "note5", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "6", invdate: "2007-09-06", name: "test6", note: "note6", amount: "400.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" },
+                    { id: "7", invdate: "2007-10-04", name: "test7", note: "note7", amount: "300.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "8", invdate: "2007-10-03", name: "test8", note: "note8", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "9", invdate: "2007-09-01", name: "test9", note: "note9", amount: "400.00", tax: "30.00", closed: false, ship_via: "TN", total: "430.00" },
+                    { id: "10", invdate: "2007-09-08", name: "test10", note: "note10", amount: "500.00", tax: "30.00", closed: true, ship_via: "TN", total: "530.00" },
+                    { id: "11", invdate: "2007-09-08", name: "test11", note: "note11", amount: "500.00", tax: "30.00", closed: false, ship_via: "FE", total: "530.00" },
+                    { id: "12", invdate: "2007-09-10", name: "test12", note: "note12", amount: "300.00", tax: "30.00", closed: false, ship_via: "FE", total: "530.00" },
+                    { id: "13", invdate: "2007-10-01", name: "test_test_test_test_test", note: "note", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "14", invdate: "2007-10-02", name: "test2222222222222222", note: "note2", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "15", invdate: "2007-09-01", name: "test3", note: "note3", amount: "400.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" },
+                    { id: "16", invdate: "2007-10-04", name: "test4444444444444444", note: "note4", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "17", invdate: "2007-10-31", name: "test5", note: "note5", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "18", invdate: "2007-09-06", name: "test6", note: "note6", amount: "500.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" },
+                    { id: "19", invdate: "2007-10-04", name: "test7", note: "note7", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "20", invdate: "2007-10-03", name: "test8", note: "note8", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "21", invdate: "2007-09-01", name: "test9", note: "note9", amount: "400.00", tax: "30.00", closed: false, ship_via: "TN", total: "430.00" },
+                    { id: "22", invdate: "2007-09-08", name: "test10", note: "note10", amount: "500.00", tax: "30.00", closed: true, ship_via: "TN", total: "530.00" },
+                    { id: "23", invdate: "2007-09-08", name: "test11", note: "note11", amount: "500.00", tax: "30.00", closed: false, ship_via: "FE", total: "530.00" },
+                    { id: "24", invdate: "2007-09-10", name: "test12", note: "note12", amount: "500.00", tax: "30.00", closed: false, ship_via: "FE", total: "530.00" }
+                ],
+                grid = $("#list");
+
+            grid.jqGrid({
+                datatype: 'local',
+                data: mydata,
+                colNames: ['Inv No', 'Date', 'Client A', 'Client B', 'Amount', 'Tax', 'Total', 'Closed', 'Shipped via', 'Notes'],
+                colModel: [
+                    { name: 'id', index: 'id', width: 70, align: 'center', sorttype: 'int' },
+                    { name: 'invdate', index: 'invdate', width: 80, align: 'center', sorttype: 'date',
+                        formatter: 'date', formatoptions: { newformat: 'd-M-Y' }, datefmt: 'd-M-Y'
+                    },
+                    { name: 'name', index: 'name', width: 70,
+                        cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                            //合并单元格
+                            return 'id=\'name' + rowId + "\'";
+                            //if (Number(rowId) < 5) { return ' colspan=2' }
+                        }
+                    },
+                    { name: 'nameB', index: 'nameB', width: 70,
+                        cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                            //if (Number(rowId) < 5) { return ' style="display:none;"' }
+                        }
+                    },
+                    { name: 'amount', index: 'amount', width: 100, formatter: 'number', align: 'right',
+                        cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                            //合并单元格
+                            return 'id=\'amount' + rowId + "\'";
+                        }
+                    },
+                    { name: 'tax', index: 'tax', width: 70, formatter: 'number', align: 'right',
+                        cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                            //合并单元格
+                            return 'id=\'tax' + rowId + "\'";
+                        }
+                    },
+                    { name: 'total', index: 'total', width: 120, formatter: 'number', align: 'right',
+                        cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                            //合并单元格
+                            return 'id=\'total' + rowId + "\'";
+                        }
+                    },
+                    { name: 'closed', index: 'closed', width: 110, align: 'center', formatter: 'checkbox',
+                        edittype: 'checkbox', editoptions: { value: 'Yes:No', defaultValue: 'Yes' }
+                    },
+                    { name: 'ship_via', index: 'ship_via', width: 120, align: 'center', formatter: 'select',
+                        edittype: 'select', editoptions: { value: 'FE:FedEx;TN:TNT;IN:Intim', defaultValue: 'Intime' },
+                        //①给当前想合并的单元格设置id
+                        cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                            return 'id=\'ship_via' + rowId + "\'";
+                        }
+                    },
+                    { name: 'note', index: 'note', width: 100, sortable: false }
+                ],
+                rowNum: 15,
+                rowList: [10, 15, 20, 30],
+                pager: '#pager',
+                gridview: true,
+                rownumbers: true,
+                sortname: 'invdate',
+                viewrecords: true,
+                sortorder: 'desc',
+                caption: 'Just simple local grid',
+                height: '100%',
+                gridComplete: function() {
+                    //②在gridComplete调用合并方法
+                    var gridName = "list";
+                    Merger(gridName, 'amount');
+                    Merger(gridName, 'tax');
+                    Merger(gridName, 'total');
+                    Merger(gridName, 'name');
+                    Merger(gridName, 'ship_via');
+                }
+
+            });
+
+            //公共调用方法
+            function Merger(gridName, CellName) {
+                //得到显示到界面的id集合
+                var mya = $("#" + gridName + "").getDataIDs();
+                //当前显示多少条
+                var length = mya.length;
+                for (var i = 0; i < length; i++) {
+                    //从上到下获取一条信息
+                    var before = $("#" + gridName + "").jqGrid('getRowData', mya[i]);
+                    //定义合并行数
+                    var rowSpanTaxCount = 1;
+                    for (j = i + 1; j <= length; j++) {
+                        //和上边的信息对比 如果值一样就合并行数+1 然后设置rowspan 让当前单元格隐藏
+                        var end = $("#" + gridName + "").jqGrid('getRowData', mya[j]);
+                        if (before[CellName] == end[CellName]) {
+                            rowSpanTaxCount++;
+                            $("#" + gridName + "").setCell(mya[j], CellName, '', { display: 'none' });
+                        } else {
+                            rowSpanTaxCount = 1;
+                            break;
+                        }
+                        $("#" + CellName + "" + mya[i] + "").attr("rowspan", rowSpanTaxCount);
+                    }
+                }
+            }
+        });
+        
+        
+        //]]>
+
+    </script>
+
+</head>
+<body>
+    <table id="list">
+        <tr>
+            <td />
+        </tr>
+    </table>
+    <div id="pager">
+    </div>
+</body>
+</html>

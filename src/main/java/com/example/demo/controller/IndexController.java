@@ -45,11 +45,18 @@ public class IndexController {
 //	@Autowired
 //	private RoleRepository roleRepository;
 
-	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/"}, method = RequestMethod.GET)
 	public String index() {
 		logger.info("this is index page...");
 		return "index";
 	}
+	
+	
+//	@RequestMapping(value = { "/aa" }, method = RequestMethod.GET)
+//	public String a() {
+//		logger.info("this is index page...");
+//		return "a";
+//	}
 
 	@ResponseBody
 	@RequestMapping("/test.json")
