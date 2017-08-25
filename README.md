@@ -30,6 +30,7 @@ vuejs 增删改查的demo，自动建表 <br>
 		jqgrid 增删改查
 		
 		jqgrid [合并单元格：](http://www.cnblogs.com/puke/archive/2012/10/17/2728435.html)
+		请查看效果：http://localhost/user/merge.html
 		
 		gons json转对象
 		
@@ -174,6 +175,9 @@ c.getGenericType(); //得到泛型类型
 	项目启动后的链接地址：http://localhost/user/orders.html<br/>
 	效果：
 ![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/jqgrid-curd.png)
+
+## JQgrid 单元格合并
+![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/jqgridMerge.png)
 
 
 

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Just simple local grid</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="/jquery-ui-1.12.1.custom/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/css/ui.jqgrid.css" />
+    <script type="text/javascript" src="/js/grid.locale-cn.js"></script>
+	<script src="/js/jquery.jqGrid.js"></script>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        $(document).ready(function() {
+            var mydata = [
+                    { id: "1", invdate: "2007-10-01", name: "test1", note: "note", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "2", invdate: "2007-10-02", name: "test2", note: "note2", amount: "200.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "3", invdate: "2007-09-01", name: "test3", note: "note3", amount: "200.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" },
+                    { id: "4", invdate: "2007-10-04", name: "test4", note: "note4", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "5", invdate: "2007-10-04", name: "test6", note: "note5", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "6", invdate: "2007-09-06", name: "test6", note: "note6", amount: "400.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" },
+                    { id: "7", invdate: "2007-10-04", name: "test6", note: "note6", amount: "300.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "8", invdate: "2007-10-03", name: "test6", note: "note6", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "9", invdate: "2007-09-01", name: "test9", note: "note6", amount: "400.00", tax: "30.00", closed: false, ship_via: "TN", total: "430.00" },
+                    { id: "10", invdate: "2007-09-08", name: "test10", note: "note10", amount: "500.00", tax: "30.00", closed: true, ship_via: "TN", total: "530.00" },
+                    { id: "11", invdate: "2007-09-08", name: "test11", note: "note11", amount: "500.00", tax: "30.00", closed: false, ship_via: "FE", total: "530.00" },
+                    { id: "12", invdate: "2007-09-10", name: "test12", note: "note12", amount: "300.00", tax: "30.00", closed: false, ship_via: "FE", total: "530.00" },
+                    { id: "13", invdate: "2007-10-01", name: "test13", note: "note", amount: "200.00", tax: "10.00", closed: true, ship_via: "TN", total: "210.00" },
+                    { id: "14", invdate: "2007-10-02", name: "test14", note: "note2", amount: "300.00", tax: "20.00", closed: false, ship_via: "FE", total: "320.00" },
+                    { id: "15", invdate: "2007-09-01", name: "test15", note: "note3", amount: "400.00", tax: "30.00", closed: false, ship_via: "FE", total: "430.00" }
+                ],
+            mydata2 = [
+                    { id: "1", invdate: "2007-10-01", name: "test4", note: "note2", amount: "100.00" },
+                    { id: "2", invdate: "2007-10-02", name: "test4", note: "note2", amount: "200.00"},
+                    { id: "3", invdate: "2007-09-01", name: "test4", note: "note4", amount: "300.00"},
+                    { id: "4", invdate: "2007-10-04", name: "test4", note: "note4", amount: "400.00" },
+                    { id: "5", invdate: "2007-10-04", name: "test8", note: "note6", amount: "500.00" },
+                    { id: "6", invdate: "2007-09-06", name: "test8", note: "note6", amount: "600.00" },
+                    { id: "7", invdate: "2007-10-04", name: "test8", note: "note8", amount: "700.00"},
+                    { id: "8", invdate: "2007-10-03", name: "test8", note: "note8", amount: "800.00"},
+                    { id: "9", invdate: "2007-09-01", name: "test12", note: "note10", amount: "900.00" },
+                    { id: "10", invdate: "2007-09-08", name: "test12", note: "note10", amount: "1000.00" },
+                    { id: "11", invdate: "2007-09-09", name: "test12", note: "note12", amount: "1100.00"},
+                    { id: "12", invdate: "2007-09-10", name: "test12", note: "note12", amount: "1200.00" },
+                    { id: "13", invdate: "2007-10-01", name: "test13", note: "note13", amount: "1300.00"},
+                    { id: "14", invdate: "2007-10-02", name: "test14", note: "note14", amount: "1400.00"},
+                    { id: "15", invdate: "2007-09-01", name: "test15", note: "note15", amount: "1500.00"}
+                ],
+            
+            $table = $("#table");
+            
+            $table.jqGrid({
+            	datatype:'local',
+            	data:mydata2,
+            	colModel:[
+            		{name:'name', index:'name', width:100, align:'center',
+    					cellattr:function(rowId, tv, rowObject, cm, rdata){
+    						return 'id=\'name' + rowId + "\'";
+    					}        			
+            		},
+            		{name:'note', index:'note', width:100, align:'center', 
+            			cellattr:function(rowId, tv, rowObject, cm, rdata){
+            				return 'id=\'note' + rowId + "\'";
+    					} 
+            		},
+            		{name:'amount', index:'amount', width:100, align:'center',
+            			cellattr:function(rowId, tv, rowObject, cm, rdata){
+            				return 'id=\'amount' + rowId + "\'";
+    					} 
+            		},
+            		{name:'invdate', index:'invdate', width:100, align:'center', sorttype:'date',
+            			cellattr:function(rowId, tv, rowObject, cm, rdata){
+            				return 'id=\'invdate' + rowId + "\'";
+    					} 
+            		}
+            	],
+            	
+            	runNum: 20,
+            	rowList:[10,20,30],
+            	pager:'#tablePager',
+            	gridview:true,
+            	viewrecoreds:true,
+            	rownumbers:true,
+//             	sortorder:'asc',
+//             	sortname:'name',
+            	caption:'Merge Cell Jqgrid Table',
+            	height:'100%',
+            	gridComplete:function(){
+            		var gridName = "table";
+            		mergeCell(gridName, 'name');
+            		mergeCell(gridName, 'note');
+            		//amount, invdate不参与单元格合并
+            		//mergeCell(gridName, 'amount');
+            		//mergeCell(gridName, 'invdate');
+            	}
+            	
+            });
+            
+            
+            function mergeCell(gridName, cellName){
+            	var $table = $('#'+gridName+"");
+            	var datas = $table.getDataIDs();
+    			for (var i =0; i<datas.length; i++){
+    				var before = $table.jqGrid('getRowData', datas[i]);
+    				var rowspan =1;
+    				for( var j= i+1; j<=datas.length; j++){
+    					var end = $table.jqGrid('getRowData', datas[j]);
+    					if(before[cellName] == end[cellName]){
+    						rowspan ++;
+    						$table.setCell(datas[j], cellName, '', {display:'none'});
+    					}else{
+    						rowspan =1;
+    						break;
+    					}
+    					$('#' + cellName + '' + datas[i]).attr('rowspan', rowspan);
+    				}
+    			}
+            }
+        });
+        
+        
+        
+        //]]>
+
+    </script>
+
+</head>
+<body>
+
+	<div id="container" style="width:500px; margin:auto;margin-top:20px;">
+		<div class="panel-header">
+			jqGrid merge same Row's Cell
+		</div>
+		<div class="panel-body">
+		    <table id="table"></table>
+		    <div id="tablePager"></div>
+		</div>
+	</div>
+</body>
+</html>
