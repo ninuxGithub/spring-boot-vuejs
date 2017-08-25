@@ -277,4 +277,107 @@ public class ExcelUtil {
 		return Collections.max(list);
 	}
 
+	/**
+	 * @param wb
+	 * @param sheet
+	 * @param excelHeaderData
+	 * @param rownum
+	 * @param marginLeft 将表格整体往右移动 marginLeft 个单元格
+	 */
+	public static void buildTableHeader(HSSFWorkbook wb, HSSFSheet sheet, ExcelHeaderData excelHeaderData, Integer rownum, int marginLeft) {
+		List<ExcelRow> headerRows = excelHeaderData.buildHeaderDataList();
+		int totalCols = getTotalCols(headerRows);
+		logger.trace("totalColspan :" + totalCols);
+
+		HSSFCellStyle titleStyle = ExcelUtil.titleStyle(wb);
+		for (int r = 0; r < headerRows.size(); r++) {
+			Row row = null;
+			Cell cell = null;
+			row = sheet.createRow(rownum + r);
+			increaseRow();//增加行
+			ExcelRow excelRow = headerRows.get(r);
+			LinkedList<ExcelCell> rows = excelRow.getRows();
+			for (int c = 0; c < totalCols; c++) {
+				ExcelCell excelCell = rows.get(c);
+				int colspan = excelCell.getColspan();
+				int rowspan = excelCell.getRowspan();
+				String title = excelCell.getTitle();
+				int colIndex = excelCell.getColIndex();
+				
+				int updateColumn = c + marginLeft;
+				cell = row.createCell(updateColumn);
+				cell.setCellStyle(titleStyle);
+				if (colIndex == c) {
+					if(null != title){
+						cell.setCellValue(title);
+					}
+					if (rowspan > 1 || colspan > 1) {
+						CellRangeAddress region = new CellRangeAddress(rownum + r, rownum + r + rowspan - 1, updateColumn, updateColumn + colspan - 1);
+						sheet.addMergedRegion(region);
+					}
+				}
+			}
+		}
+		
+	}
+
+	/**
+	 * @param list 数据集合
+	 * @param wb excel工作簿
+	 * @param sheet excel sheet
+	 * @param clazz List 数封装的Java 类型
+	 * @param marginLeft 将表格整体往右边一定marginLeft个单元格
+	 */
+	public static <T> void drawExcel(List<T> list, HSSFWorkbook wb, HSSFSheet sheet, Class<?> clazz, int marginLeft) {
+		logger.info("===>开启填充 {} sheet....", clazz.getName());
+
+		List<ExcelFieldBean> excleFieldBeanList = analyseExcelField(clazz);
+
+		Row row = null;
+		Cell cell = null;
+		row = sheet.createRow(getLocalRow());
+		HSSFCellStyle titleStyle = titleStyle(wb);
+		// 填充表头，不考虑复杂表头的情况
+		for (int t = 0; t < excleFieldBeanList.size(); t++) {
+			int updateColumn = marginLeft + t;
+			cell = row.createCell(updateColumn);
+			cell.setCellValue(excleFieldBeanList.get(t).getTitle());
+			cell.setCellStyle(titleStyle);
+		}
+		// 画完标题后行号+1
+		increaseRow();
+
+		for (int i = 0; i < list.size(); i++) {
+			row = sheet.createRow(getLocalRow());
+			increaseRow();
+
+			for (int f = 0; f < excleFieldBeanList.size(); f++) {
+				int updateColumn = marginLeft + f;
+				cell = row.createCell(updateColumn);
+				ExcelFieldBean excelFieldBean = excleFieldBeanList.get(f);
+				String field = excelFieldBean.getFiled();
+				String datePattern = excelFieldBean.getDatePattern();
+				String numberPattern = excelFieldBean.getNumberPattern();
+				short textAlign = excelFieldBean.getTextAlign();
+				Class<?> filedClazz = excelFieldBean.getFiledClazz();
+
+				Object value = ReflectUtil.getTypeField(list.get(i), field);
+				if (null == value) {
+					value = ExcelUtil.DEFAULTVALUE;
+				} else {
+					if (filedClazz == Date.class) {
+						value = DateUtil.formatDate(value, datePattern);
+					} else if (filedClazz.isAssignableFrom(Number.class) || filedClazz.isAssignableFrom(Double.class)) {
+						value = NumberUtil.formatNumber(value, numberPattern);
+					}
+				}
+				cell.setCellValue(value.toString());
+				HSSFCellStyle bodyStyle = bodyStyle(wb);
+				bodyStyle.setAlignment(textAlign);
+				cell.setCellStyle(bodyStyle);
+			}
+		}
+		
+	}
+
 }

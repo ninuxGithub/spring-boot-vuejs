@@ -56,13 +56,20 @@ public class ExportExcelController implements ExcelHeaderData {
 			HSSFSheet sheet = wb.createSheet("风控报表1");
 
 			sheet.setDefaultColumnWidth(15);// 15个字符
+			
+			int marginLeft=1;
 
 			ExcelUtil.drawExcel(orders, wb, sheet, Order.class);
 
 			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
+			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
 
 			//创建表头
 			ExcelUtil.buildTableHeader(wb, sheet, this, ExcelUtil.getLocalRow());
+			
+			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
+			
+			ExcelUtil.buildTableHeader(wb, sheet, this, ExcelUtil.getLocalRow(), marginLeft);
 
 			// #####################################
 			// drawExcelHeader(sheet, head0, head1, row, titleStyle);
@@ -73,6 +80,9 @@ public class ExportExcelController implements ExcelHeaderData {
 
 			ExcelUtil.drawExcel(users, wb, sheet, User.class);
 
+			ExcelUtil.increaseRow();// 换行//每个填充之间加入一个空行
+			
+			ExcelUtil.drawExcel(users, wb, sheet, User.class, marginLeft);
 			// 锁住第一列
 			ExcelUtil.freezeFirstRow(sheet);
 
@@ -103,6 +113,7 @@ public class ExportExcelController implements ExcelHeaderData {
 		cellList.add(new ExcelCell("业绩基准", 1, 2, 4));
 		cellList.add(new ExcelCell(null, 0, 0, 5));
 		cellList.add(new ExcelCell("净值损线", 2, 1, 6));
+		cellList.add(new ExcelCell("净值损线2", 1, 1, 7));
 		excelRow.setRows(cellList);
 		headerRows.add(excelRow);
 
@@ -116,6 +127,7 @@ public class ExportExcelController implements ExcelHeaderData {
 		cellList.add(new ExcelCell("本期", 1, 1, 4));
 		cellList.add(new ExcelCell("今年以来", 1, 1, 5));
 		cellList.add(new ExcelCell(null, 0, 0, 6));
+		cellList.add(new ExcelCell("今年以来", 1, 1, 7));
 		excelRow.setRows(cellList);
 		headerRows.add(excelRow);
 		String json = JsonUtil.toJson(headerRows);
