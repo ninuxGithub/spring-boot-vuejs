@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <!-- The jQuery library is a prerequisite for all jqSuite products -->
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/jquery.min.js"></script> 
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-en.js"></script>
+    <!-- This is the Javascript file of jqGrid -->   
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/src/jquery.jqGrid.js"></script>
+    <!-- A link to a Boostrap  and jqGrid Bootstrap CSS siles-->
+    <script src="/js/util.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> 
+    <link rel="stylesheet" type="text/css" media="screen" href="http://www.guriddo.net/demo/css/trirand/ui.jqgrid-bootstrap.css" />
+	<script>
+		$.jgrid.defaults.width = 780;
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+	</script>
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/bootstrap-datepicker.js"></script> 
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/bootstrap3-typeahead.js"></script> 
+    <link rel="stylesheet" type="text/css" media="screen" href="http://www.guriddo.net/demo/css/bootstrap-datepicker.css" />
+    <meta charset="utf-8" />
+    <title>jqGrid Loading Data - Dialogs - Edit Controls</title>
+</head>
+<body>
+
+    <style type="text/css">
+		 .customelement .radio-inline input {
+			 margin-left :-30px;
+		 }
+		 .typeahead {
+			 z-index: 10051;
+		 }
+    </style>
+<div style="margin-left:20px">
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+	
+</div>
+    <script type="text/javascript"> 
+
+        $(document).ready(function () {
+
+			
+            $("#jqGrid").jqGrid({
+                url: '/loadProducts',
+                mtype: "POST",
+                editurl:'/modifyProduct',
+                datatype: "json",
+                page: 1,
+                colModel: [
+                    { label: 'Order ID', name: 'orderId', key: true, width: 75 },                   
+                    {
+						label: '生产日期',
+                        name: 'productDate',
+                        width: 150,
+                        editable: true,
+                        sorttype: 'date',formatter: function(cellvalue, options, rowObject){
+                        	var d = new Date(cellvalue).Format('yyyy-MM-dd')
+                        	return d;
+                        },
+                        edittype:"text",
+                        editoptions: {
+                            // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                            // use it to place a third party control to customize the toolbar
+                            dataInit: function (element) {
+                               $(element).datepicker({
+									autoclose: true,
+									format: 'yyyy-mm-dd',
+									orientation : 'bottom'
+                                });
+                            }
+                        }
+                    },
+                     {
+						 label: '库存',
+                         name: 'stockAmount',
+                         width: 150,
+                         editable: true,
+                         edittype: "select",
+                         editoptions: {
+                             value: "10:10;20:20;30:30;100:100;200:200;300:300"
+                         }
+                     },
+//                     {
+// 						label: 'Freigh',
+//                         name: 'Freight',
+//                         width: 150,
+//                         editable: true,
+//                         edittype: "custom",
+//                         editoptions: {
+//                             custom_value: getFreightElementValue,
+//                             custom_element: createFreightEditElement
+//                         }
+//                     },
+                    {
+						label: '产品名称',
+                        name: 'produceName',
+                        width: 150,
+                        editable: true,
+                        edittype: "text",
+                        editoptions: {
+                            // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                            // use it to place a third party control to customize the toolbar
+                            dataInit: function (element) {
+							   $(element).attr("autocomplete","off").typeahead({ 
+								   appendTo : "body",
+									source: function(query, proxy) {
+										$.ajax({
+// 											url: 'http://trirand.com/blog/phpjqgrid/examples/jsonp/autocompletepbs.php?callback=?&acelem=ShipName',
+											url: '/autoScript?callback=?&element=ShipName',
+											dataType: "jsonp",
+											data: {term: query},
+											success : proxy
+										});
+									}
+							   });
+                            }
+                        }
+                    }
+                ],
+				loadonce : false,
+				viewrecords: true,
+                height: 250,
+                rowNum: 10,
+                pager: "#jqGridPager"
+            });
+
+            $("#jqGrid").navGrid("#jqGridPager",
+                { edit: true, add: false, del: false, search: false, refresh: true, view: false, align: "left" },
+                { closeAfterEdit: true, focusField : 1 }
+            );
+
+//             function createFreightEditElement(value, editOptions) {
+
+//                 var div =$("<div style='margin-bottom:5px;margin-top:-10px;'></div>");
+//                 var label = $("<label class='radio-inline'></label>");
+//                 var radio = $("<input>", { type: "radio", value: "0", name: "freight", id: "zero", checked: (value != 25 && value != 50 && value != 100) });
+// 				label.append(radio).append("0");
+//                 var label1 = $("<label class='radio-inline'></label>");
+//                 var radio1 = $("<input>", { type: "radio", value: "25", name: "freight", id: "twentyfive", checked: value == 25 });
+// 				label1.append(radio1).append("25");
+//                 var label2 = $("<label class='radio-inline'></label>");
+//                 var radio2 = $("<input>", { type: "radio", value: "50", name: "freight", id: "fifty", checked: value == 50 });
+// 				label2.append(radio2).append("50");
+//                 var label3 = $("<label class='radio-inline'></label>");
+//                 var radio3 = $("<input>", { type: "radio", value: "100", name: "freight", id: "hundred", checked: value == 100 });
+// 				label3.append(radio3).append("100");
+//                 div.append(label).append(label1).append(label2).append(label3);
+
+//                 return div;
+//             }
+
+            // The javascript executed specified by JQGridColumn.EditTypeCustomGetValue when EditType = EditType.Custom
+            // One parameter passed - the custom element created in JQGridColumn.EditTypeCustomCreateElement
+//             function getFreightElementValue(elem, oper, value) {
+//                 if (oper === "set") {
+//                     var radioButton = $(elem).find("input:radio[value='" + value + "']");
+//                     if (radioButton.length > 0) {
+//                         radioButton.prop("checked", true);
+//                     }
+//                 }
+
+//                 if (oper === "get") {
+//                     return $(elem).find("input:radio:checked").val();
+//                 }
+//             }
+
+        });
+
+    </script>
+
+    
+</body>
+</html>

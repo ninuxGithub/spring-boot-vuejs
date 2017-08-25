@@ -126,7 +126,7 @@ public class IndexController {
 		
 		
 		// {"groupOp":"AND","rules":[{"field":"productDate","op":"bw","data":"2011-1-1"},{"field":"stockAmount","op":"gt","data":"100"}]}
-		logger.info("logger is {}", filters);
+		logger.info("filters is {}", filters);
 
 		if(null != filters){
 			Gson gson = new Gson();
