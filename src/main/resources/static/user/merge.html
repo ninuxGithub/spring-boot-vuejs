@@ -5,11 +5,14 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css"/>    
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="/jquery-ui-1.12.1.custom/jquery-ui.css"/>
-    <link rel="stylesheet" type="text/css" href="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/css/ui.jqgrid.css" />
+    
+    <link rel="stylesheet" type="text/css" href="/css/ui.jqgrid-4.0.0.css" />
+<!--     <link rel="stylesheet" type="text/css" href="http://www.ok-soft-gmbh.com/jqGrid/jquery.jqGrid-4.0.0/css/ui.jqgrid.css" /> -->
     <script type="text/javascript" src="/js/grid.locale-cn.js"></script>
 	<script src="/js/jquery.jqGrid.js"></script>
 	<style type="text/css">
@@ -91,8 +94,6 @@
             	gridview:true,
             	viewrecoreds:true,
             	rownumbers:true,
-//             	sortorder:'asc',
-//             	sortname:'name',
             	caption:'Merge Cell Jqgrid Table',
             	height:'100%',
             	width:440,
@@ -116,20 +117,6 @@
             	}]
             });
             
-//             $("#gridId").jqGrid("setGroupHeaders", {
-//                 useColSpanStyle : true ,//没有表头的列是否与表头所在行的空单元格合并
-//                 groupHeaders : [//{},{}...
-//                     {
-//                         startColumnName : "name1",//合并列的起始位置 colModel中的name
-//                         numberOfColumns : 2, //合并列数 包含起始列
-//                         titleText : "合并表头一"//表头
-//                     },{
-//                         startColumnName : "name2",
-//                         numberOfColumns : 3,
-//                         titleText : "合并表头二"
-//                     }
-//                 ]
-//             });
             
             
             function mergeCell(gridName, cellName){
@@ -154,6 +141,20 @@
         });
         
         
+//             $("#gridId").jqGrid("setGroupHeaders", {
+//                 useColSpanStyle : true ,//没有表头的列是否与表头所在行的空单元格合并
+//                 groupHeaders : [//{},{}...
+//                     {
+//                         startColumnName : "name1",//合并列的起始位置 colModel中的name
+//                         numberOfColumns : 2, //合并列数 包含起始列
+//                         titleText : "合并表头一"//表头
+//                     },{
+//                         startColumnName : "name2",
+//                         numberOfColumns : 3,
+//                         titleText : "合并表头二"
+//                     }
+//                 ]
+//             });
         
         //]]>
 
