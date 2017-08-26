@@ -5,7 +5,7 @@
     <!-- The jQuery library is a prerequisite for all jqSuite products -->
     <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/jquery.min.js"></script> 
     <!-- We support more than 40 localizations -->
-    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-en.js"></script>
+    <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-cn.js"></script>
     <!-- This is the Javascript file of jqGrid -->   
     <script type="text/ecmascript" src="http://www.guriddo.net/demo/js/trirand/src/jquery.jqGrid.js"></script>
     <!-- A link to a Boostrap  and jqGrid Bootstrap CSS siles-->
@@ -25,9 +25,6 @@
     <link rel="stylesheet" type="text/css" media="screen" href="http://www.guriddo.net/demo/css/bootstrap-datepicker.css" />
     <meta charset="utf-8" />
     <title>jqGrid Loading Data - Dialogs - Edit Controls</title>
-</head>
-<body>
-
     <style type="text/css">
 		 .customelement .radio-inline input {
 			 margin-left :-30px;
@@ -36,6 +33,9 @@
 			 z-index: 10051;
 		 }
     </style>
+</head>
+<body>
+
 <div style="margin-left:20px">
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
@@ -83,20 +83,33 @@
                          editable: true,
                          edittype: "select",
                          editoptions: {
-                             value: "10:10;20:20;30:30;100:100;200:200;300:300"
+                        	dataUrl : "/amountSelect",
+ 							cacheUrlData: true,
+ 							buildSelect : function( data) {
+ 								var data = data.split(";"), i=0, len=data.length, s='<select>',d;
+ 								while(i<len) {
+ 									d = data[i].split(":");
+ 									if(d[0]!="" && d[0]!=null){
+	 									s += '<option>'+d[0]+'</option>';
+ 									}
+ 									i++;
+ 								}
+ 								s += '</select>';
+ 								return s;
+ 							}
                          }
                      },
-//                     {
-// 						label: 'Freigh',
-//                         name: 'Freight',
-//                         width: 150,
-//                         editable: true,
-//                         edittype: "custom",
-//                         editoptions: {
-//                             custom_value: getFreightElementValue,
-//                             custom_element: createFreightEditElement
-//                         }
-//                     },
+                    {
+						label: 'Price',
+                        name: 'price',
+                        width: 150,
+                        editable: true,
+                        edittype: "custom",
+                        editoptions: {
+                            custom_value: getPriceElementValue,
+                            custom_element: createPriceEditElement
+                        }
+                    },
                     {
 						label: '产品名称',
                         name: 'produceName',
@@ -111,8 +124,7 @@
 								   appendTo : "body",
 									source: function(query, proxy) {
 										$.ajax({
-// 											url: 'http://trirand.com/blog/phpjqgrid/examples/jsonp/autocompletepbs.php?callback=?&acelem=ShipName',
-											url: '/autoScript?callback=?&element=ShipName',
+											url: '/autoJson?callback=?',
 											dataType: "jsonp",
 											data: {term: query},
 											success : proxy
@@ -125,50 +137,64 @@
                 ],
 				loadonce : false,
 				viewrecords: true,
-                height: 250,
-                rowNum: 10,
+                height: 450,
+                rowNum: 30,
                 pager: "#jqGridPager"
             });
 
             $("#jqGrid").navGrid("#jqGridPager",
-                { edit: true, add: false, del: false, search: false, refresh: true, view: false, align: "left" },
-                { closeAfterEdit: true, focusField : 1 }
+                { edit: true, add: true, del: true, search: false, refresh: true, view: false, align: "left" },
+                /*, focusField : 1  修改的时候自动聚焦*/
+                { closeAfterEdit: true , focusField : 1},
+                {
+                	editData:{id:null},
+            		recreateForm:true,
+            		closeAfterAdd:true,
+            		reloadAfterSubmit:true,
+                },
+                {},
+                {}
             );
 
-//             function createFreightEditElement(value, editOptions) {
+//             custom_value: getPriceElementValue,
+//             custom_element: createPriceEditElement
+            function createPriceEditElement(value, editOptions) {
+				console.dir(value)
+				if(value==null||value==""){
+					value=0;
+				}
+                var div =$("<div style='margin-bottom:5px;margin-top:-10px;'></div>");
+                var label = $("<label class='radio-inline'></label>");
+                var radio = $("<input>", { type: "radio", value: value, name: "price", id: "zero", checked: (value != 25 && value != 50 && value != 100) });
+				label.append(radio).append(value);
+                var label1 = $("<label class='radio-inline'></label>");
+                var radio1 = $("<input>", { type: "radio", value: "25", name: "price", id: "twentyfive", checked: value == 25 });
+				label1.append(radio1).append("25");
+                var label2 = $("<label class='radio-inline'></label>");
+                var radio2 = $("<input>", { type: "radio", value: "50", name: "price", id: "fifty", checked: value == 50 });
+				label2.append(radio2).append("50");
+                var label3 = $("<label class='radio-inline'></label>");
+                var radio3 = $("<input>", { type: "radio", value: "100", name: "price", id: "hundred", checked: value == 100 });
+				label3.append(radio3).append("100");
+                div.append(label).append(label1).append(label2).append(label3);
 
-//                 var div =$("<div style='margin-bottom:5px;margin-top:-10px;'></div>");
-//                 var label = $("<label class='radio-inline'></label>");
-//                 var radio = $("<input>", { type: "radio", value: "0", name: "freight", id: "zero", checked: (value != 25 && value != 50 && value != 100) });
-// 				label.append(radio).append("0");
-//                 var label1 = $("<label class='radio-inline'></label>");
-//                 var radio1 = $("<input>", { type: "radio", value: "25", name: "freight", id: "twentyfive", checked: value == 25 });
-// 				label1.append(radio1).append("25");
-//                 var label2 = $("<label class='radio-inline'></label>");
-//                 var radio2 = $("<input>", { type: "radio", value: "50", name: "freight", id: "fifty", checked: value == 50 });
-// 				label2.append(radio2).append("50");
-//                 var label3 = $("<label class='radio-inline'></label>");
-//                 var radio3 = $("<input>", { type: "radio", value: "100", name: "freight", id: "hundred", checked: value == 100 });
-// 				label3.append(radio3).append("100");
-//                 div.append(label).append(label1).append(label2).append(label3);
-
-//                 return div;
-//             }
+                return div;
+            }
 
             // The javascript executed specified by JQGridColumn.EditTypeCustomGetValue when EditType = EditType.Custom
             // One parameter passed - the custom element created in JQGridColumn.EditTypeCustomCreateElement
-//             function getFreightElementValue(elem, oper, value) {
-//                 if (oper === "set") {
-//                     var radioButton = $(elem).find("input:radio[value='" + value + "']");
-//                     if (radioButton.length > 0) {
-//                         radioButton.prop("checked", true);
-//                     }
-//                 }
+            function getPriceElementValue(elem, oper, value) {
+                if (oper === "set") {
+                    var radioButton = $(elem).find("input:radio[value='" + value + "']");
+                    if (radioButton.length > 0) {
+                        radioButton.prop("checked", true);
+                    }
+                }
 
-//                 if (oper === "get") {
-//                     return $(elem).find("input:radio:checked").val();
-//                 }
-//             }
+                if (oper === "get") {
+                    return $(elem).find("input:radio:checked").val();
+                }
+            }
 
         });
 

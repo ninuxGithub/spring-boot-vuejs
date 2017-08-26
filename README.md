@@ -27,7 +27,12 @@ vuejs 增删改查的demo，自动建表 <br>
 		
 		jqgrid 数据展示
 		
-		jqgrid 增删改查
+		jqgrid 增删改查:
+		{
+			jqgrid 标准的修改流程(更加优雅)：http://localhost/user/jqgridDemo.html
+			jqgrid 自定义按钮修改(自定义)：http://localhost/user/orders.html
+		}
+		
 		
 		jqgrid [合并单元格：](http://www.cnblogs.com/puke/archive/2012/10/17/2728435.html)
 		请查看效果：http://localhost/user/merge.html
@@ -97,6 +102,56 @@ vuejs 增删改查的demo，自动建表 <br>
 		}
 	}
 ```
+
+Jqgrid 自动提示
+```javascript
+dataInit : function (element)
+{
+    $(element).attr("autocomplete", "off").typeahead(
+    {
+        appendTo : "body",
+        source : function (query, proxy)
+        {
+            $.ajax(
+            {
+                url : '/autoJson?callback=?',
+                dataType : "jsonp",
+                data :
+                {
+                    term : query
+                },
+                success : proxy
+            }
+            );
+        }
+    }
+    );
+}
+```
+对应的后台接口为：
+```java
+	@ResponseBody
+	@RequestMapping(value = "/autoJson", method = RequestMethod.GET)
+	public JSONPObject autoScriptUpdate(@RequestParam("term") String query,
+							@RequestParam(value ="callback", required=true) String callback,
+							@RequestParam(value ="_", required=true) String line){
+		
+		List<Order> orders = orderRepository.findAll();
+		logger.info("autoJson run....");
+		logger.info(callback);
+		
+		List<Entry> list = new ArrayList<>();
+		for (Order order : orders) {
+			if(order.getProduceName().contains(query)){
+				String str = order.getProduceName();
+				list.add(new Entry(str,str));
+			}
+		}
+		System.out.println(list);
+		
+		return new JSONPObject(callback, list);   
+	}
+```		
 
 
 

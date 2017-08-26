@@ -166,6 +166,12 @@ public class IndexController {
 	@RequestMapping(value="/modifyProduct", method=RequestMethod.POST)
 	public CustomGenericResponse modify(@RequestParam("id") Long orderId, @RequestParam("oper") String operation , Order order){
 		Order save=null;
+//		Long orderId =null;
+//		if(orderid.equals("_empty")){
+//			orderId = null;
+//		}else{
+//			orderId = Long.valueOf(orderid);
+//		}
 		if(orderId != null && operation.equals("edit")){
 			order.setOrderId(orderId);
 			System.out.println("modify: "+order);
@@ -186,6 +192,7 @@ public class IndexController {
 				CustomGenericResponse response = new CustomGenericResponse();
 				response.setSuccess(true);
 				response.setMessage("Action successful!");
+				logger.info("modify order success...");
 				return response;
 				
 			}
@@ -193,8 +200,52 @@ public class IndexController {
 		CustomGenericResponse response = new CustomGenericResponse();
 		response.setSuccess(false);
 		response.setMessage("Action failure!");
+		logger.info("modify order failed...");
 		return response;
 	}
+	
+//	@ResponseBody
+//	@RequestMapping(value="/modifyProduct", method=RequestMethod.POST)
+//	public CustomGenericResponse modify(@RequestParam("id") String orderid, @RequestParam("oper") String operation , Order order){
+//		Order save=null;
+//		Long orderId =null;
+//		if(orderid.equals("_empty")){
+//			orderId = null;
+//		}else{
+//			orderId = Long.valueOf(orderid);
+//		}
+//		if(orderId != null && operation.equals("edit")){
+//			order.setOrderId(orderId);
+//			System.out.println("modify: "+order);
+//			save = orderRepository.saveAndFlush(order);
+//		}else if(null == orderId && operation.equals("add")){
+//			System.out.println("add: "+ order);
+//			save = orderRepository.save(order);
+//		}else if(null != orderId && operation.equals("del")){
+//			System.out.println("del: "+ order);
+//			orderRepository.delete(orderId);
+//			//save 成功删除后不可以为空
+//			save = order;
+//		}
+//		
+//		if(null != save){
+//			Boolean success = save!=null;
+//			if (success == true) {
+//				CustomGenericResponse response = new CustomGenericResponse();
+//				response.setSuccess(true);
+//				response.setMessage("Action successful!");
+//				logger.info("modify order success...");
+//				return response;
+//				
+//			}
+//		}
+//		CustomGenericResponse response = new CustomGenericResponse();
+//		response.setSuccess(false);
+//		response.setMessage("Action failure!");
+//		logger.info("modify order failed...");
+//		return response;
+//	}
+
 
 	/**
 	 * 分页的核心逻辑：

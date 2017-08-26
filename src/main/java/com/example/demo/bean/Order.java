@@ -76,7 +76,6 @@ public class Order implements Serializable {
 	private Double price;
 	
 	
-	
 	private String headPortrait;
 	
 	
