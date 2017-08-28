@@ -39,11 +39,38 @@
 <div style="margin-left:20px">
     <table id="jqGrid"></table>
     <div id="jqGridPager"></div>
+    
+    <div id="remote">
+  		<input class="typeahead"  type="text" placeholder="输入文字，自动提示.....">
+	</div>
 	
 </div>
     <script type="text/javascript"> 
 
         $(document).ready(function () {
+        	
+        	$(".typeahead").typeahead({ 
+					source: function(query, proxy) {
+						$.ajax({
+							url: '/autoTypeahead',
+							dataType: "json",
+							data: {term: query},
+							
+							/***完整的写法， 指定json中的某个字段(属性)***/
+							//方法一：
+							success : function (data){
+				                var arr = [];
+				                for (i in data){
+				                	console.dir(data[i])
+				                    arr.push(data[i]['produceName']+" "+data[i]['orderId']);
+				                }
+				                proxy(arr);
+					        }
+							//方法二：
+							//success : proxy //简写
+						});
+					}
+			   });
 
 			
             $("#jqGrid").jqGrid({

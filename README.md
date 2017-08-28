@@ -39,6 +39,34 @@ vuejs 增删改查的demo，自动建表 <br>
 		
 		gons json转对象
 		
+		typeahead:输入框文本自动提示功能， 返回值为json , jsonp都可以
+		依赖的js为：http://www.guriddo.net/demo/js/bootstrap3-typeahead.js
+		核心代码如下：
+```javascript
+        	$(".typeahead").typeahead({ 
+					source: function(query, proxy) {
+						$.ajax({
+							url: '/autoJson?callback=?',
+							dataType: "jsonp",
+							data: {term: query},
+							
+							/***完整的写法， 指定json中的某个字段(属性)***/
+							//方法一：
+							success : function (data){
+				                var arr = [];
+				                for (i in data)
+				                {
+				                    arr.push(data[i]['name']);
+				                }
+				                proxy(arr);
+					        },
+							//方法二：
+							success : proxy //简写
+						});
+					}
+			   });
+```		
+		
 		Excel导出 demo 
 		
 		

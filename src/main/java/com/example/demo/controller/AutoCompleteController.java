@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +94,25 @@ public class AutoCompleteController {
 		System.out.println(list);
 		
 		return new JSONPObject(callback, list);   
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/autoTypeahead", method = RequestMethod.GET)
+	public List<Order> autoTypeahead(@RequestParam("term") String query){
+		
+		List<Order> orders = orderRepository.findAll();
+		
+		if(StringUtils.isNotBlank(query)){
+			List<Order> list = new ArrayList<>();
+			for(Order order : orders){
+				if(order.getProduceName().contains(query)){
+					list.add(order);
+				}
+			}
+			return list;
+		}
+		return orders;
+		
 	}
 	
 	
