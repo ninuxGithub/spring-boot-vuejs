@@ -263,6 +263,11 @@ c.getGenericType(); //得到泛型类型
 ![image](https://github.com/ninuxGithub/spring-boot-vuejs/blob/master/jqgridMerge.png)
 
 
+## 需要注意的地方
+	<script type="text/javascript" src='/user/userIndex.js'></script>
+    <script type="text/javascript" src='/user/userInput.js'></script>
+   	在/user/userIndex.html 页面其实引入的可以是js 文件而不是vue文件
+  	vue.js 不可以引入关键字import 这就是与vue-cli或者vue+webpack的区别之处
 
 
 		
